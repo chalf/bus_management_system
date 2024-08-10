@@ -1,1 +1,4 @@
-# bus_management_system
+
+	SETUP
+- Download ApacheTomcat 9
+- Build Project
