@@ -23,7 +23,11 @@ import org.springframework.web.servlet.view.JstlView;
 @Configuration
 @EnableWebMvc
 @EnableTransactionManagement
-@ComponentScan(basePackages = {"com.dtnh.controllers",})
+@ComponentScan(basePackages = {
+    "com.busplanner.controllers",
+    "com.busplanner.repositories",
+    "com.busplanner.services",
+})
 public class WebApplicationContext implements WebMvcConfigurer {
 
     @Override
@@ -31,15 +35,15 @@ public class WebApplicationContext implements WebMvcConfigurer {
         configurer.enable();
     }
     
-    //Basic ViewResolver for template
-//    @Bean
-//    public InternalResourceViewResolver getInternalResourceViewResolver() {
-//        InternalResourceViewResolver resolver = new InternalResourceViewResolver();
-//        resolver.setViewClass(JstlView.class);
-//        resolver.setPrefix("/WEB-INF/pages/");
-//        resolver.setSuffix(".jsp");
-//        return resolver;
-//    }
+    // Basic ViewResolver for template
+    @Bean
+    public InternalResourceViewResolver getInternalResourceViewResolver() {
+        InternalResourceViewResolver resolver = new InternalResourceViewResolver();
+        resolver.setViewClass(JstlView.class);
+        resolver.setPrefix("/WEB-INF/pages/");
+        resolver.setSuffix(".jsp");
+        return resolver;
+    }
     
     @Bean
     // Specify Property Files
