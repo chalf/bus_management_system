@@ -7,6 +7,7 @@ package com.busplanner.services.implement;
 import com.busplanner.pojo.Routes;
 import com.busplanner.services.RouteService;
 import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,8 +22,8 @@ public class RouteServiceImplement implements RouteService{
 
     @Override
     @Transactional
-    public List<Routes> getListRoutes() {
-        return routeService.getListRoutes();
+    public List<Routes> getListRoutes(Map<String, String> params) {
+        return routeService.getListRoutes(params);
     }
 
     @Override

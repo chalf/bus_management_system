@@ -8,6 +8,7 @@ import com.busplanner.pojo.Stops;
 import com.busplanner.repositories.StopRepository;
 import com.busplanner.services.StopService;
 import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,8 +25,8 @@ public class StopServiceImplement  implements StopService{
     
     @Override
     @Transactional
-    public List<Stops> retrieveStop() {
-        return stopRepository.retrieveStop();
+    public List<Stops> retrieveStop(Map<String, String> params) {
+        return stopRepository.retrieveStop(params);
     }
 
     @Override

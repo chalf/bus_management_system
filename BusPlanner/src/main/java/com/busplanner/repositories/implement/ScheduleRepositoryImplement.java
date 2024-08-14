@@ -6,7 +6,9 @@ package com.busplanner.repositories.implement;
 
 import com.busplanner.pojo.Schedules;
 import com.busplanner.repositories.ScheduleRepository;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -29,13 +31,38 @@ public class ScheduleRepositoryImplement implements ScheduleRepository{
 
     @Override
     @Transactional
-    public List<Schedules> getAllSchedules() {
+    public List<Schedules> getAllSchedules(Map<String, String> params) {
         Session s = this.sessionFactory.getObject().getCurrentSession();
-        CriteriaBuilder criteriaBuilder = s.getCriteriaBuilder();
-        CriteriaQuery<Schedules> criteriaQuery = criteriaBuilder.createQuery(Schedules.class);
-        Root<Schedules> root = criteriaQuery.from(Schedules.class);
-        criteriaQuery.select(root);
-        return s.createQuery(criteriaQuery).getResultList();
+        CriteriaBuilder b = s.getCriteriaBuilder();
+        CriteriaQuery<Schedules> q = b.createQuery(Schedules.class);
+        Root<Schedules> root = q.from(Schedules.class);
+        q.select(root);
+
+        if (params != null) {
+            List<Predicate> predicates = new ArrayList<>();
+
+            String dayOfWeek = params.get("q");
+            if (dayOfWeek != null && !dayOfWeek.isEmpty()) {
+                Predicate p1 = b.equal(root.get("dayOfWeek"), dayOfWeek);
+                predicates.add(p1);
+            }
+
+            String start = params.get("start");
+            if (start != null && !start.isEmpty()) {
+                Predicate p2 = b.greaterThanOrEqualTo(root.get("departureTime"), java.sql.Time.valueOf(start));
+                predicates.add(p2);
+            }
+
+            String end = params.get("end");
+            if (end != null && !end.isEmpty()) {
+                Predicate p3 = b.lessThanOrEqualTo(root.get("arrivalTime"), java.sql.Time.valueOf(end));
+                predicates.add(p3);
+            }
+
+            q.where(predicates.toArray(Predicate[]::new));
+        }
+
+        return s.createQuery(q).getResultList();
     }
 
     @Override
