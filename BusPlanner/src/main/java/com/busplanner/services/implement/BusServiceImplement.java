@@ -36,14 +36,20 @@ public class BusServiceImplement implements BusService{
 
     @Override
     @Transactional
-    public Buses getBusById(int id) {
-        return busRepository.getBusById(id);
+    public Buses getBusById(int busId) {
+        return busRepository.getBusById(busId);
     }
 
     @Override
     @Transactional
-    public void deleteBusbyId(int id) {
-        busRepository.deleteBusbyId(id);
+    public void deleteBusById(int busId) {
+        busRepository.deleteBusById(busId);
+    }
+
+    @Override
+    @Transactional
+    public List<Buses> getBusesByRouteId(int routeId) {
+        return busRepository.getBusesByRouteId(routeId);
     }
     
 }

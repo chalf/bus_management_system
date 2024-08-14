@@ -4,17 +4,16 @@
  */
 package com.busplanner.repositories;
 
-import com.busplanner.pojo.Buses;
+import com.busplanner.pojo.Routes;
 import java.util.List;
 
 /**
  *
  * @author ASUS
  */
-public interface BusRepository {
-    List<Buses> getListBus();
-    void addOrUpdateBus(Buses bus);
-    Buses getBusById(int busId);
-    void deleteBusById(int busId);
-    List<Buses> getBusesByRouteId(int routeId);
+public interface RouteRepository {
+    List<Routes> getListRoutes();
+    void addOrUpdateRoute(Routes route);
+    Routes getRouteById(int id);
+    void deleteRouteById(int id);
 }

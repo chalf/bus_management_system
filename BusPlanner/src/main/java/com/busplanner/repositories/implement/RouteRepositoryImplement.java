@@ -4,79 +4,64 @@
  */
 package com.busplanner.repositories.implement;
 
-import com.busplanner.pojo.Buses;
-import com.busplanner.repositories.BusRepository;
+import com.busplanner.pojo.Routes;
+import com.busplanner.repositories.RouteRepository;
 import java.util.List;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
  * @author ASUS
  */
-public class BusRepositoryImplement implements BusRepository{
+@Repository
+public class RouteRepositoryImplement implements RouteRepository {
     
     @Autowired
     private LocalSessionFactoryBean sessionFactory;
     
     @Override
     @Transactional
-    public List<Buses> getListBus() {
+    public List<Routes> getListRoutes() {
         Session s = this.sessionFactory.getObject().getCurrentSession();
         CriteriaBuilder criteria = s.getCriteriaBuilder();
-        CriteriaQuery<Buses> query = criteria.createQuery(Buses.class);
-        Root<Buses> busRoot = query.from(Buses.class);
+        CriteriaQuery<Routes> query = criteria.createQuery(Routes.class);
+        Root<Routes> routeRoot = query.from(Routes.class);
         
-        Query<Buses> q = s.createQuery(query);
+        Query<Routes> q = s.createQuery(query);
         return q.getResultList();
-        
     }
 
     @Override
     @Transactional
-    public void addOrUpdateBus(Buses bus) {
+    public void addOrUpdateRoute(Routes route) {
         Session s = this.sessionFactory.getObject().getCurrentSession();
-        if(bus.getBusId() != null)
-            s.update(bus);
+        if(route.getRouteId() != null)
+            s.update(route);
         else
-            s.save(bus);
+            s.save(route);
     }
 
     @Override
     @Transactional
-    public Buses getBusById(int busId) {
+    public Routes getRouteById(int id) {
         Session s = this.sessionFactory.getObject().getCurrentSession();
-        return s.get(Buses.class, busId);
+        return s.get(Routes.class, id);
     }
 
     @Override
     @Transactional
-    public void deleteBusById(int busId) {
+    public void deleteRouteById(int id) {
         Session s = this.sessionFactory.getObject().getCurrentSession();
-        Buses bus = getBusById(busId);
-        s.delete(bus);
-    }
-
-    @Override
-    @Transactional
-    public List<Buses> getBusesByRouteId(int routeId) {
-        Session s = this.sessionFactory.getObject().getCurrentSession();
-        CriteriaBuilder criteria = s.getCriteriaBuilder();
-        CriteriaQuery<Buses> query = criteria.createQuery(Buses.class);
-        Root<Buses> root = query.from(Buses.class);
-        
-        
-        Predicate predicate = criteria.equal(root.get("routeId").get("routeId"), routeId);
-        query.where(predicate);
-        
-        return s.createQuery(query).getResultList();
+        Routes route = getRouteById(id);
+        s.delete(route);
     }
     
 }
