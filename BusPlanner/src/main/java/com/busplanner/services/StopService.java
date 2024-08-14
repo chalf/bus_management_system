@@ -6,13 +6,14 @@ package com.busplanner.services;
 
 import com.busplanner.pojo.Stops;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
  * @author ASUS
  */
 public interface StopService {
-    List<Stops> retrieveStop();
+    List<Stops> retrieveStop(Map<String, String> params);
     void addorUpdateStop(Stops stop);
     public Stops getStopById(int id);
     void deleteStop(int id);

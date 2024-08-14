@@ -8,6 +8,7 @@ import com.busplanner.pojo.Schedules;
 import com.busplanner.repositories.ScheduleRepository;
 import com.busplanner.services.ScheduleService;
 import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -20,8 +21,8 @@ public class ScheduleServiceImplement implements ScheduleService{
     private ScheduleRepository scheduleRepository;
 
     @Override
-    public List<Schedules> getAllSchedules() {
-        return scheduleRepository.getAllSchedules();
+    public List<Schedules> getAllSchedules(Map<String, String> params) {
+        return scheduleRepository.getAllSchedules(params);
     }
 
     @Override

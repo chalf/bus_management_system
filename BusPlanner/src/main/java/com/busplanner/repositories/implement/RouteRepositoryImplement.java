@@ -4,11 +4,15 @@
  */
 package com.busplanner.repositories.implement;
 
+import com.busplanner.configs.PaginationConfigs;
 import com.busplanner.pojo.Routes;
 import com.busplanner.repositories.RouteRepository;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
@@ -29,14 +33,51 @@ public class RouteRepositoryImplement implements RouteRepository {
     
     @Override
     @Transactional
-    public List<Routes> getListRoutes() {
+    public List<Routes> getListRoutes(Map<String, String> params) {
         Session s = this.sessionFactory.getObject().getCurrentSession();
-        CriteriaBuilder criteria = s.getCriteriaBuilder();
-        CriteriaQuery<Routes> query = criteria.createQuery(Routes.class);
-        Root<Routes> routeRoot = query.from(Routes.class);
-        
-        Query<Routes> q = s.createQuery(query);
-        return q.getResultList();
+        CriteriaBuilder b = s.getCriteriaBuilder();
+        CriteriaQuery<Routes> q = b.createQuery(Routes.class);
+        Root<Routes> routeRoot = q.from(Routes.class);
+        q.select(routeRoot);
+
+        if (params != null) {
+            List<Predicate> predicates = new ArrayList<>();
+
+            String routeName = params.get("q");
+            if (routeName != null && !routeName.isEmpty()) {
+                Predicate p1 = b.like(routeRoot.get("routeName"), String.format("%%%s%%", routeName));
+                predicates.add(p1);
+            }
+
+            String startPoint = params.get("start");
+            if (startPoint != null && !startPoint.isEmpty()) {
+                Predicate p2 = b.like(routeRoot.get("startPoint"), String.format("%%%s%%", startPoint));
+                predicates.add(p2);
+            }
+
+            String endPoint = params.get("end");
+            if (endPoint != null && !endPoint.isEmpty()) {
+                Predicate p3 = b.like(routeRoot.get("endPoint"), String.format("%%%s%%", endPoint));
+                predicates.add(p3);
+            }
+
+            q.where(predicates.toArray(Predicate[]::new));
+        }
+
+        Query<Routes> query = s.createQuery(q);
+
+        if (params != null) {
+            String page = params.get("page");
+            if (page != null && !page.isEmpty()) {
+                int p = Integer.parseInt(page);
+                int start = (p - 1) * PaginationConfigs.PAGE_SIZE;
+
+                query.setFirstResult(start);
+                query.setMaxResults(PaginationConfigs.PAGE_SIZE);
+            }
+        }
+
+        return query.getResultList();
     }
 
     @Override
@@ -61,7 +102,9 @@ public class RouteRepositoryImplement implements RouteRepository {
     public void deleteRouteById(int id) {
         Session s = this.sessionFactory.getObject().getCurrentSession();
         Routes route = getRouteById(id);
-        s.delete(route);
+        if(route != null){
+            s.delete(route);
+        }
+            
     }
-    
 }

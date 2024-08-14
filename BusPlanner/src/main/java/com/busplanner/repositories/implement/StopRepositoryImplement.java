@@ -4,11 +4,15 @@
  */
 package com.busplanner.repositories.implement;
 
+import com.busplanner.configs.PaginationConfigs;
 import com.busplanner.pojo.Stops;
 import com.busplanner.repositories.StopRepository;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
@@ -29,13 +33,45 @@ public class StopRepositoryImplement implements StopRepository{
     
     @Override
     @Transactional
-    public List<Stops> retrieveStop() {
+    public List<Stops> retrieveStop(Map<String, String> params) {
         Session session = sessionFactory.getObject().getCurrentSession();
         CriteriaBuilder criteria = session.getCriteriaBuilder();
         CriteriaQuery<Stops> query = criteria.createQuery(Stops.class);
         Root<Stops> stopRoot = query.from(Stops.class);
-        
+        query.select(stopRoot);
+
+        if (params != null) {
+            List<Predicate> predicates = new ArrayList<>();
+
+            String address = params.get("q");
+            if (address != null && !address.isEmpty()) {
+                Predicate p1 = criteria.like(stopRoot.get("address"), String.format("%%%s%%", address));
+                predicates.add(p1);
+            }
+
+            String stopName = params.get("name");
+            if (stopName != null && !stopName.isEmpty()) {
+                Predicate p2 = criteria.like(stopRoot.get("stopName"), String.format("%%%s%%", stopName));
+                predicates.add(p2);
+            }
+
+            query.where(predicates.toArray(new Predicate[0]));
+        }
+
         Query<Stops> q = session.createQuery(query);
+
+        // Xử lý phân trang
+        if (params != null) {
+            String page = params.get("page");
+            if (page != null && !page.isEmpty()) {
+                int p = Integer.parseInt(page);
+                int start = (p - 1) * PaginationConfigs.PAGE_SIZE;
+
+                q.setFirstResult(start);
+                q.setMaxResults(PaginationConfigs.PAGE_SIZE);
+            }
+        }
+
         return q.getResultList();
     }
 
