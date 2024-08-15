@@ -4,6 +4,7 @@
  */
 package com.busplanner.repositories.implement;
 
+import com.busplanner.configs.PaginationConfigs;
 import com.busplanner.pojo.Schedules;
 import com.busplanner.repositories.ScheduleRepository;
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.stereotype.Repository;
@@ -62,7 +64,20 @@ public class ScheduleRepositoryImplement implements ScheduleRepository{
             q.where(predicates.toArray(Predicate[]::new));
         }
 
-        return s.createQuery(q).getResultList();
+        Query<Schedules> query = s.createQuery(q);
+
+        if (params != null) {
+            String page = params.get("page");
+            if (page != null && !page.isEmpty()) {
+                int p = Integer.parseInt(page);
+                int start = (p - 1) * PaginationConfigs.PAGE_SIZE;
+
+                query.setFirstResult(start);
+                query.setMaxResults(PaginationConfigs.PAGE_SIZE);
+            }
+        }
+
+        return query.getResultList();
     }
 
     @Override
