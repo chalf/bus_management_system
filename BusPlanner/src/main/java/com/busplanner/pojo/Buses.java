@@ -5,14 +5,19 @@
 package com.busplanner.pojo;
 
 import java.io.Serializable;
+import java.util.Set;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -31,17 +36,23 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Buses.findByBusNumber", query = "SELECT b FROM Buses b WHERE b.busNumber = :busNumber")})
 public class Buses implements Serializable {
 
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 20)
+    @Column(name = "bus_number")
+    private String busNumber;
+    @JoinColumn(name = "route_id", referencedColumnName = "route_id")
+    @ManyToOne
+    private Routes routeId;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "busId")
+    private Set<Schedules> schedulesSet;
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "bus_id")
     private Integer busId;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 20)
-    @Column(name = "bus_number")
-    private String busNumber;
 
     public Buses() {
     }
@@ -94,6 +105,22 @@ public class Buses implements Serializable {
     @Override
     public String toString() {
         return "com.busplanner.pojo.Buses[ busId=" + busId + " ]";
+    }
+
+    public Routes getRouteId() {
+        return routeId;
+    }
+
+    public void setRouteId(Routes routeId) {
+        this.routeId = routeId;
+    }
+
+    public Set<Schedules> getSchedulesSet() {
+        return schedulesSet;
+    }
+
+    public void setSchedulesSet(Set<Schedules> schedulesSet) {
+        this.schedulesSet = schedulesSet;
     }
     
 }

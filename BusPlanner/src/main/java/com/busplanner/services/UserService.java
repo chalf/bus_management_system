@@ -5,11 +5,16 @@
 package com.busplanner.services;
 
 import com.busplanner.pojo.Users;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 /**
  *
  * @author Admin
  */
-public interface UserService {
-    Users retrieveUser(int id);
+public interface UserService extends UserDetailsService{
+    Users retrieveUserByUsername(String username);
+    boolean existsByUsername(String username);
+    Users addUser(Users user);
+    boolean authUser(String username, String password);
+    Users getUserByUsername(String username);
 }

@@ -20,8 +20,11 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
+import javax.validation.constraints.*;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  *
@@ -51,15 +54,21 @@ public class Users implements Serializable {
     private Integer userId;
     @Basic(optional = false)
     @Column(name = "username")
+    @Pattern(regexp = "^[a-zA-Z][a-zA-Z0-9]*$", message = "{validation.user.username.format}")
+    @Size(min = 1, max = 50, message = "{validation.user.username}")
     private String username;
     @Basic(optional = false)
     @Column(name = "password")
+    @NotBlank(message = "{validation.user.password}")
     private String password;
     @Basic(optional = false)
     @Column(name = "email")
+    @Email(message = "{validation.user.email.check}")
+    @NotEmpty(message = "{validation.user.email}")
     private String email;
     @Basic(optional = false)
     @Column(name = "full_name")
+    @NotBlank(message = "{validation.user.fullName}")
     private String fullName;
     @Column(name = "avatar_url")
     private String avatarUrl;
@@ -76,6 +85,8 @@ public class Users implements Serializable {
     private Set<Favoriteroutes> favoriteroutesSet;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "userId")
     private Set<Trafficreports> trafficreportsSet;
+    @Transient
+    private MultipartFile file;
 
     public Users() {
     }
@@ -206,6 +217,20 @@ public class Users implements Serializable {
     @Override
     public String toString() {
         return "com.busplanner.pojo.Users[ userId=" + userId + " ]";
+    }
+
+    /**
+     * @return the file
+     */
+    public MultipartFile getFile() {
+        return file;
+    }
+
+    /**
+     * @param file the file to set
+     */
+    public void setFile(MultipartFile file) {
+        this.file = file;
     }
     
     

@@ -7,21 +7,60 @@ package com.busplanner.services.implement;
 import com.busplanner.pojo.Users;
 import com.busplanner.repositories.UserRepository;
 import com.busplanner.services.UserService;
+import java.util.HashSet;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 /**
  *
  * @author Admin
  */
-@Service
+@Service("userDetailsService")
 public class UserServiceImplement implements UserService{
     @Autowired
     private UserRepository userRepository;
 
     @Override
-    public Users retrieveUser(int id) {
-        return this.userRepository.retrieveUser(id);
+    public Users retrieveUserByUsername(String username) {
+        return this.userRepository.retrieveUserByUsername(username);
+    }
+
+    @Override
+    public boolean existsByUsername(String username) {
+        return this.userRepository.existsByUsername(username);
+    }
+
+    @Override
+    public Users addUser(Users user) {
+        return this.userRepository.addUser(user);
+    }
+
+    @Override
+    public boolean authUser(String username, String password) {
+        return this.userRepository.authUser(username, password);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Users u = this.getUserByUsername(username);
+        if (u == null) {
+            throw new UsernameNotFoundException("Invalid User!");
+        }
+
+        Set<GrantedAuthority> authorities = new HashSet<>();
+        authorities.add(new SimpleGrantedAuthority(u.getRole()));
+        return new org.springframework.security.core.userdetails.User(
+                u.getUsername(), u.getPassword(), authorities);
+    }
+
+    @Override
+    public Users getUserByUsername(String username) {
+        return this.userRepository.getUserByUsername(username);
     }
     
 }

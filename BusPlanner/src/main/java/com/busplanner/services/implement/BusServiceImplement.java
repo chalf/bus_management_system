@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class BusServiceImplement implements BusService{
     
     @Autowired
-    BusRepository busRepository;
+    private BusRepository busRepository;
 
     @Override
     @Transactional

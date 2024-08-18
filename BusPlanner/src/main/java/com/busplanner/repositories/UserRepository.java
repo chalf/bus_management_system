@@ -11,5 +11,9 @@ import com.busplanner.pojo.Users;
  * @author Admin
  */
 public interface UserRepository {
-    Users retrieveUser(int id);
+    Users retrieveUserByUsername(String username);
+    boolean existsByUsername(String username);
+    Users addUser(Users user);
+    boolean authUser(String username, String password);
+    Users getUserByUsername(String username);
 }

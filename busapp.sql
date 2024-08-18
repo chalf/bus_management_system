@@ -25,10 +25,6 @@ DROP TABLE IF EXISTS `buses`;
 CREATE TABLE `buses` (
   `bus_id` int NOT NULL AUTO_INCREMENT,
   `bus_number` varchar(20) NOT NULL,
-  `capacity` int NOT NULL,
-  `current_location_lat` decimal(10,8) DEFAULT NULL,
-  `current_location_long` decimal(11,8) DEFAULT NULL,
-  `last_updated` timestamp NULL DEFAULT NULL,
   `route_id` int DEFAULT NULL,
   PRIMARY KEY (`bus_id`),
   KEY `route_id` (`route_id`),
@@ -240,7 +236,7 @@ CREATE TABLE `users` (
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -249,6 +245,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
+INSERT INTO `users` VALUES (1,'admin','123456','admin@busplanner.com','Duong Hieu',NULL,'admin','2024-08-12 03:26:07','2024-08-12 03:26:07');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -261,4 +258,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-08-10 22:55:20
+-- Dump completed on 2024-08-14 15:28:30

@@ -9,12 +9,14 @@ import com.busplanner.repositories.FavoriteRouteRepository;
 import com.busplanner.services.FavoriteRouteService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
  * @author ASUS
  */
+@Service
 public class FavoriteRouteServiceImplement implements FavoriteRouteService{
     @Autowired
     private FavoriteRouteRepository favoriteRouteRepository;

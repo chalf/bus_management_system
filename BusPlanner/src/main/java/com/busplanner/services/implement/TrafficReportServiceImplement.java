@@ -9,11 +9,13 @@ import com.busplanner.repositories.TrafficReportRepository;
 import com.busplanner.services.TrafficReportService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  *
  * @author ASUS
  */
+@Service
 public class TrafficReportServiceImplement implements TrafficReportService{
     
     @Autowired
