@@ -16,7 +16,11 @@
         <!--<h1>Hello</h1>-->
         <ol>
             
+                <li>${user.userId}</li>
+                <li>${user.username}</li>
                 <li>${user.fullName}</li>
+                <li>${user.email}</li>
+                <li>${user.avatarUrl}</li>
             
         </ol>
     </body>

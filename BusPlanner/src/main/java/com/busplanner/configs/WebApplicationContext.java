@@ -16,6 +16,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.http.MediaType;
@@ -43,9 +44,7 @@ import org.springframework.web.servlet.view.JstlView;
     "com.busplanner.repositories",
     "com.busplanner.services",
     "com.busplanner.component",
-    "com.busplanner.validator",
-    
-})
+    "com.busplanner.validator",})
 public class WebApplicationContext implements WebMvcConfigurer {
 
     @Override
@@ -78,7 +77,7 @@ public class WebApplicationContext implements WebMvcConfigurer {
     }
 
     // bean validator configuration
-    @Bean(name = "validator")
+    @Bean
     public LocalValidatorFactoryBean validator() {
         LocalValidatorFactoryBean bean = new LocalValidatorFactoryBean();
         bean.setValidationMessageSource(messageSource());
@@ -86,10 +85,14 @@ public class WebApplicationContext implements WebMvcConfigurer {
     }
 
     @Override
-    //import org.springframework.validation.Validator;
     public Validator getValidator() {
         return validator();
     }
+
+//    @Bean(name = "beanValidator")
+//    public javax.validation.Validator beanValidator() {
+//        return validator(); // LocalValidatorFactoryBean là cháu chắt của javax.validation.Validator
+//    }
 
     // for uploading file
     @Bean
@@ -100,21 +103,22 @@ public class WebApplicationContext implements WebMvcConfigurer {
     }
 
     // Spring Validation 
-    @Bean
-    public WebAppValidator applicationValidator() {
-        Set<Validator> springValidators = new HashSet<>();
-        springValidators.add(new UsernameValidator());
+//    @Bean
+//    @DependsOn("validator")  // Đảm bảo rằng "validator" đã được khởi tạo trước
+//    public WebAppValidator applicationValidator() {
+//        Set<Validator> springValidators = new HashSet<>();
+//        springValidators.add(new UsernameValidator());
+//
+//        WebAppValidator validator = new WebAppValidator();
+//        validator.setSpringValidators(springValidators);
+//        return validator;
+//    }
 
-        WebAppValidator validator = new WebAppValidator();
-        validator.setSpringValidators(springValidators);
-        return validator;
-    }
-    
-    @Override   //thiết lập trả về json thay vì xml
-    public  void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-        MappingJackson2HttpMessageConverter jsonConverter = new MappingJackson2HttpMessageConverter();
-        jsonConverter.setSupportedMediaTypes(Collections.singletonList(MediaType.APPLICATION_JSON));
-        converters.add(jsonConverter);
-    }
+//    @Override   //thiết lập trả về json thay vì xml
+//    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+//        MappingJackson2HttpMessageConverter jsonConverter = new MappingJackson2HttpMessageConverter();
+//        jsonConverter.setSupportedMediaTypes(Collections.singletonList(MediaType.APPLICATION_JSON));
+//        converters.add(jsonConverter);
+//    }
 
 }

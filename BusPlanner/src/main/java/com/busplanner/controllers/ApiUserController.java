@@ -5,6 +5,7 @@
 package com.busplanner.controllers;
 
 import com.busplanner.component.JwtService;
+import com.busplanner.pojo.LoginForm;
 import com.busplanner.pojo.Users;
 import com.busplanner.services.UserService;
 import com.busplanner.validator.WebAppValidator;
@@ -19,11 +20,14 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  *
@@ -38,18 +42,18 @@ public class ApiUserController {
     private UserService userService;
     @Autowired
     private JwtService jwtService;
-    @Autowired
-    private WebAppValidator webAppValidator;
+//    @Autowired
+//    private WebAppValidator webAppValidator;
 
-    @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody Users user) {
-        if (this.userService.authUser(user.getUsername(), user.getPassword()) == true) {
-            String token = this.jwtService.generateTokenLogin(user.getUsername());
+    @PostMapping(path = "/login")
+    public ResponseEntity<String> login(@ModelAttribute LoginForm login) {
+        if (this.userService.authUser(login.getUsername(), login.getPassword()) == true) {
+            String token = this.jwtService.generateTokenLogin(login.getUsername());
 
             return new ResponseEntity<>(token, HttpStatus.OK);
         }
 
-        return new ResponseEntity<>("error", HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>("Không tồn tại tài khoản hoặc mật khẩu không đúng", HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping(path = "/current-user", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -57,14 +61,17 @@ public class ApiUserController {
         return new ResponseEntity<>(this.userService.retrieveUserByUsername(user.getName()), HttpStatus.OK);
     }
 
-    @InitBinder({"create", })
-    public void initBinder(WebDataBinder binder) {
-        binder.setValidator(webAppValidator);
-    }
-
-    @PostMapping(path = "/register", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<Users> create(@Valid @RequestBody Users userRegister) {
-
+//    @InitBinder({"create", })
+//    public void initBinder(WebDataBinder binder) {
+//        binder.setValidator(webAppValidator);
+//    }
+    @PostMapping(path = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Users> create(@Valid @ModelAttribute Users userRegister,
+            @RequestPart("file") MultipartFile file) {
+        userRegister.setFile(file);
+        //mặc định tạo user có role là citizen
+        userRegister.setRole("citizen");
         Users user = this.userService.addUser(userRegister);
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }

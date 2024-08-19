@@ -26,6 +26,7 @@ public class UserController {
     @RequestMapping("/users/{username}")
     public String getUserDetail(Model model, @PathVariable(value = "username") String username) {
         model.addAttribute("user", this.userService.retrieveUserByUsername(username));
+//        model.addAttribute("user")
         return "users";
     }
 }
