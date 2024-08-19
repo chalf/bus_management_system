@@ -16,18 +16,19 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  *
- * @author ASUS
+ * @author Admin
  */
 @Entity
 @Table(name = "routestops")
-@XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Routestops.findAll", query = "SELECT r FROM Routestops r"),
     @NamedQuery(name = "Routestops.findByRouteStopId", query = "SELECT r FROM Routestops r WHERE r.routeStopId = :routeStopId"),
+    @NamedQuery(name = "Routestops.findByDirection", query = "SELECT r FROM Routestops r WHERE r.direction = :direction"),
     @NamedQuery(name = "Routestops.findByOrder", query = "SELECT r FROM Routestops r WHERE r.order = :order")})
 public class Routestops implements Serializable {
 
@@ -38,6 +39,12 @@ public class Routestops implements Serializable {
     @Column(name = "route_stop_id")
     private Integer routeStopId;
     @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 8)
+    @Column(name = "direction")
+    private String direction;
+    @Basic(optional = false)
+    @NotNull
     @Column(name = "order")
     private int order;
     @JoinColumn(name = "route_id", referencedColumnName = "route_id")
@@ -54,8 +61,9 @@ public class Routestops implements Serializable {
         this.routeStopId = routeStopId;
     }
 
-    public Routestops(Integer routeStopId, int order) {
+    public Routestops(Integer routeStopId, String direction, int order) {
         this.routeStopId = routeStopId;
+        this.direction = direction;
         this.order = order;
     }
 
@@ -65,6 +73,14 @@ public class Routestops implements Serializable {
 
     public void setRouteStopId(Integer routeStopId) {
         this.routeStopId = routeStopId;
+    }
+
+    public String getDirection() {
+        return direction;
+    }
+
+    public void setDirection(String direction) {
+        this.direction = direction;
     }
 
     public int getOrder() {

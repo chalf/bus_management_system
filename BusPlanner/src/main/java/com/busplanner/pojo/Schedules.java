@@ -19,18 +19,19 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  *
- * @author ASUS
+ * @author Admin
  */
 @Entity
 @Table(name = "schedules")
-@XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Schedules.findAll", query = "SELECT s FROM Schedules s"),
     @NamedQuery(name = "Schedules.findByScheduleId", query = "SELECT s FROM Schedules s WHERE s.scheduleId = :scheduleId"),
+    @NamedQuery(name = "Schedules.findByDirection", query = "SELECT s FROM Schedules s WHERE s.direction = :direction"),
     @NamedQuery(name = "Schedules.findByDepartureTime", query = "SELECT s FROM Schedules s WHERE s.departureTime = :departureTime"),
     @NamedQuery(name = "Schedules.findByArrivalTime", query = "SELECT s FROM Schedules s WHERE s.arrivalTime = :arrivalTime"),
     @NamedQuery(name = "Schedules.findByDayOfWeek", query = "SELECT s FROM Schedules s WHERE s.dayOfWeek = :dayOfWeek")})
@@ -43,14 +44,23 @@ public class Schedules implements Serializable {
     @Column(name = "schedule_id")
     private Integer scheduleId;
     @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 8)
+    @Column(name = "direction")
+    private String direction;
+    @Basic(optional = false)
+    @NotNull
     @Column(name = "departure_time")
     @Temporal(TemporalType.TIME)
     private Date departureTime;
     @Basic(optional = false)
+    @NotNull
     @Column(name = "arrival_time")
     @Temporal(TemporalType.TIME)
     private Date arrivalTime;
     @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 9)
     @Column(name = "day_of_week")
     private String dayOfWeek;
     @JoinColumn(name = "bus_id", referencedColumnName = "bus_id")
@@ -67,8 +77,9 @@ public class Schedules implements Serializable {
         this.scheduleId = scheduleId;
     }
 
-    public Schedules(Integer scheduleId, Date departureTime, Date arrivalTime, String dayOfWeek) {
+    public Schedules(Integer scheduleId, String direction, Date departureTime, Date arrivalTime, String dayOfWeek) {
         this.scheduleId = scheduleId;
+        this.direction = direction;
         this.departureTime = departureTime;
         this.arrivalTime = arrivalTime;
         this.dayOfWeek = dayOfWeek;
@@ -80,6 +91,14 @@ public class Schedules implements Serializable {
 
     public void setScheduleId(Integer scheduleId) {
         this.scheduleId = scheduleId;
+    }
+
+    public String getDirection() {
+        return direction;
+    }
+
+    public void setDirection(String direction) {
+        this.direction = direction;
     }
 
     public Date getDepartureTime() {
