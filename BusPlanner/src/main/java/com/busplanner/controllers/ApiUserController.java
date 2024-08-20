@@ -67,12 +67,18 @@ public class ApiUserController {
 //    }
     @PostMapping(path = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Users> create(@Valid @ModelAttribute Users userRegister,
+    public ResponseEntity<Object> create(@Valid @ModelAttribute Users userRegister,
             @RequestPart("file") MultipartFile file) {
         userRegister.setFile(file);
         //mặc định tạo user có role là citizen
         userRegister.setRole("citizen");
         Users user = this.userService.addUser(userRegister);
-        return new ResponseEntity<>(user, HttpStatus.CREATED);
+        
+        if (user.getUserId() == Users.duplicateUsername())
+            return new ResponseEntity<>( "Username đã tồn tại", HttpStatus.CONFLICT);
+        if (user.getUserId() == Users.duplicateEmail())
+            return new ResponseEntity<>("Email đã được sử dụng", HttpStatus.CONFLICT);
+        
+        return new ResponseEntity<>( user, HttpStatus.CREATED);
     }
 }

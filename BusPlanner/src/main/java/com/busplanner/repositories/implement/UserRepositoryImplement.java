@@ -11,6 +11,7 @@ import com.busplanner.repositories.UserRepository;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import java.io.IOException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.Date;
 import java.util.Map;
 import java.util.logging.Level;
@@ -21,6 +22,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import org.hibernate.Session;
+import org.hibernate.exception.ConstraintViolationException;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
@@ -33,7 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Admin
  */
 @Repository
-@Transactional
+
 public class UserRepositoryImplement implements UserRepository {
 
     @Autowired
@@ -44,6 +46,7 @@ public class UserRepositoryImplement implements UserRepository {
     private Cloudinary cloudinary;
 
     @Override
+    @Transactional
     public Users retrieveUserByUsername(String username) {
         Session session = sessionFactory.getObject().getCurrentSession();
         CriteriaComponents<Users> components = CriteriaUtil.createCriteriaComponents(session, Users.class);
@@ -59,6 +62,8 @@ public class UserRepositoryImplement implements UserRepository {
     }
 
     @Override
+    @Transactional
+    // true -> đã tồn tại username
     public boolean existsByUsername(String username) {
         Session session = sessionFactory.getObject().getCurrentSession();
         CriteriaComponents<Users> components = CriteriaUtil.createCriteriaComponents(session, Users.class);
@@ -68,14 +73,31 @@ public class UserRepositoryImplement implements UserRepository {
         Root<Users> userRoot = components.getRoot();
 
         query.where(criteria.equal(userRoot.get("username"), username));
-        Query<Users> execution = session.createQuery(query);
-        return execution != null;
+        Query<Users> executeQuery = session.createQuery(query);
+        try {
+            Users user = executeQuery.getSingleResult(); 
+    /* vì username là unique nên ta sài getSingleResult() không có lỗi, 
+    nếu lỗi sẽ xuất hiện ngoại lệ dưới*/
+            return true; // User tồn tại
+        } catch (NoResultException e) {
+            return false; // Không có user nào có username này
+        }
     }
 
     @Override
+    @Transactional
     public Users addUser(Users user) {
         Session session = this.sessionFactory.getObject().getCurrentSession();
         try {
+            // nếu vi phạm trùng username hoặc email thì gán id = -1 hoặc 0 như một flag để controller biết
+            if(!this.existsByUsername(user.getUsername()) == false){
+                user.setUserId(Users.duplicateUsername());
+                return user;
+            }
+            if(!this.existsByEmail(user.getEmail()) == false){
+                user.setUserId(Users.duplicateEmail());
+                return user;
+            }
             Map imageInfo = cloudinary.uploader().upload(user.getFile().getBytes(), ObjectUtils.asMap("resource_type", "auto"));
             user.setAvatarUrl((String) imageInfo.get("secure_url"));
             // Gán giá trị cho createdAt và updatedAt
@@ -83,7 +105,7 @@ public class UserRepositoryImplement implements UserRepository {
                 user.setCreatedAt(new Date());
             }
             user.setUpdatedAt(new Date());
-            session.save(user);
+            session.save(user);   
         } catch (IOException ex) {
             Logger.getLogger(UserRepositoryImplement.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -92,6 +114,7 @@ public class UserRepositoryImplement implements UserRepository {
     }
 
     @Override
+    @Transactional
     public boolean authUser(String username, String password) {
         try {
             Users user = this.getUserByUsername(username);
@@ -103,12 +126,34 @@ public class UserRepositoryImplement implements UserRepository {
     }
 
     @Override
+    @Transactional
     public Users getUserByUsername(String username) {
         Session s = this.sessionFactory.getObject().getCurrentSession();
         Query query = s.createNamedQuery("Users.findByUsername");
         query.setParameter("username", username);
         return (Users) query.getSingleResult();
 
+    }
+    
+    @Override
+    @Transactional
+    // true -> đã tồn tại email
+    public boolean existsByEmail(String email){
+        Session session = sessionFactory.getObject().getCurrentSession();
+        CriteriaComponents<Users> components = CriteriaUtil.createCriteriaComponents(session, Users.class);
+
+        CriteriaBuilder criteria = components.getCriteriaBuilder();
+        CriteriaQuery<Users> query = components.getCriteriaQuery();
+        Root<Users> userRoot = components.getRoot();
+        Predicate p = criteria.equal(userRoot.get("email"), email);
+        query.where(p);
+        Query executeQuery = session.createQuery(query);
+        try {
+            Users u = (Users) executeQuery.getSingleResult();
+            return true;
+        } catch (NoResultException e) {
+            return false;
+        }
     }
 
 }
