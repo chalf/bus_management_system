@@ -16,4 +16,5 @@ public interface UserRepository {
     Users addUser(Users user);
     boolean authUser(String username, String password);
     Users getUserByUsername(String username);
+    boolean existsByEmail(String email);
 }

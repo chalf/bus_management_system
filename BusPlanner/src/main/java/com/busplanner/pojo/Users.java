@@ -4,6 +4,11 @@
  */
 package com.busplanner.pojo;
 
+import com.busplanner.validator.beaninterface.UniqueEmail;
+import com.busplanner.validator.beaninterface.UniqueUsername;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
@@ -56,6 +61,7 @@ public class Users implements Serializable {
     @Column(name = "username")
     @Pattern(regexp = "^[a-zA-Z][a-zA-Z0-9]*$", message = "{validation.user.username.format}")
     @Size(min = 1, max = 50, message = "{validation.user.username}")
+//    @UniqueUsername(message = "{validation.user.username.exists}")
     private String username;
     @Basic(optional = false)
     @Column(name = "password")
@@ -65,6 +71,7 @@ public class Users implements Serializable {
     @Column(name = "email")
     @Email(message = "{validation.user.email.check}")
     @NotEmpty(message = "{validation.user.email}")
+//    @UniqueEmail(message = "{validation.user.email.exists}")
     private String email;
     @Basic(optional = false)
     @Column(name = "full_name")
@@ -81,11 +88,14 @@ public class Users implements Serializable {
     @Column(name = "updated_at")
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedAt;
+    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "userId")
     private Set<Favoriteroutes> favoriteroutesSet;
+    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "userId")
     private Set<Trafficreports> trafficreportsSet;
     @Transient
+    @JsonIgnore
     private MultipartFile file;
 
     public Users() {
@@ -223,7 +233,7 @@ public class Users implements Serializable {
      * @return the file
      */
     public MultipartFile getFile() {
-        return file;
+        return this.file;
     }
 
     /**
@@ -232,7 +242,13 @@ public class Users implements Serializable {
     public void setFile(MultipartFile file) {
         this.file = file;
     }
-    
-    
-    
+
+    public static int duplicateUsername() {
+        return -1;
+    }
+
+    public static int duplicateEmail() {
+        return 0;
+    }
+
 }
