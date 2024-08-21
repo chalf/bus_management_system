@@ -57,7 +57,8 @@ public class ApiUserController {
     }
 
     @GetMapping(path = "/current-user", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Users> details(Principal user) {
+    public ResponseEntity<?> details(Principal user) {
+        // nếu ko có token --> 403 - Forbidden
         return new ResponseEntity<>(this.userService.retrieveUserByUsername(user.getName()), HttpStatus.OK);
     }
 
