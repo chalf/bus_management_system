@@ -47,7 +47,6 @@ const Login = () => {
         setToken(token);
         setModalMessage('Đăng nhập thành công!');
         setShowModal(true);
-        console.log("token: ", token);
       } else {
         setError('Đăng nhập không thành công. Vui lòng thử lại.');
         console.error(`Login failed with status: ${response.status}`);
@@ -102,11 +101,10 @@ const Login = () => {
 
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
-          <Modal.Title>Success</Modal.Title>
+          <Modal.Title>Thông báo</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {modalMessage}
-          <p><strong>Token:</strong> {token}</p>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseModal}>
