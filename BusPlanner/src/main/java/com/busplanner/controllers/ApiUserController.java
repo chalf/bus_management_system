@@ -55,9 +55,9 @@ public class ApiUserController {
 
         return new ResponseEntity<>("Không tồn tại tài khoản hoặc mật khẩu không đúng", HttpStatus.BAD_REQUEST);
     }
-
+    
     @GetMapping(path = "/current-user", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> details(Principal user) {
+    public ResponseEntity<Users> details(Principal user) {
         // nếu ko có token --> 403 - Forbidden
         return new ResponseEntity<>(this.userService.retrieveUserByUsername(user.getName()), HttpStatus.OK);
     }

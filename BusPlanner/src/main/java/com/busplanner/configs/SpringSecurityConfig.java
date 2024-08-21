@@ -19,6 +19,11 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
  *
@@ -63,7 +68,8 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 //        http.formLogin().usernameParameter("username").passwordParameter("password");
 //        http.formLogin().defaultSuccessUrl("/").failureUrl("/login?error");
         
-        http.csrf().disable()
+        http.cors().and()
+                .csrf().disable()
                 // Không sử dụng session, tất cả các yêu cầu phải chứa JWT token để được xác thực
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
@@ -76,5 +82,17 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
 
     }
+    @Bean
+    public CorsFilter corsFilter() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowCredentials(true);
+        config.addAllowedOrigin("http://localhost:3000"); // domain của front-end
+        config.addAllowedHeader("*");
+        config.addAllowedMethod("*");
+        source.registerCorsConfiguration("/**", config);
+        return new CorsFilter(source);
+    }
+    
 
 }

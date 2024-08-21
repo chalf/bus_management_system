@@ -26,6 +26,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.validation.Validator;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -93,7 +94,6 @@ public class WebApplicationContext implements WebMvcConfigurer {
 //    public javax.validation.Validator beanValidator() {
 //        return validator(); // LocalValidatorFactoryBean là cháu chắt của javax.validation.Validator
 //    }
-
     // for uploading file
     @Bean
     public CommonsMultipartResolver multipartResolver() {
@@ -113,12 +113,12 @@ public class WebApplicationContext implements WebMvcConfigurer {
 //        validator.setSpringValidators(springValidators);
 //        return validator;
 //    }
-
 //    @Override   //thiết lập trả về json thay vì xml
 //    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
 //        MappingJackson2HttpMessageConverter jsonConverter = new MappingJackson2HttpMessageConverter();
 //        jsonConverter.setSupportedMediaTypes(Collections.singletonList(MediaType.APPLICATION_JSON));
 //        converters.add(jsonConverter);
 //    }
+
 
 }
