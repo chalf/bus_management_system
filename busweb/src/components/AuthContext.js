@@ -1,16 +1,15 @@
-// AuthContext.js
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';
 import cookie from 'react-cookies';
 import { authAPIs, endpoints } from '../configs/APIs';
 
-export const AuthContext = createContext();
+const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [userInfo, setUserInfo] = useState(null);
 
   const fetchUserInfo = async () => {
     try {
-      const token = cookie.load('authToken'); 
+      const token = cookie.load('authToken');
       if (token) {
         const response = await authAPIs().get(endpoints['current-user'], {
           headers: {
@@ -23,6 +22,7 @@ export const AuthProvider = ({ children }) => {
       }
     } catch (err) {
       console.error('Error fetching user info:', err);
+      setUserInfo(null);
     }
   };
 
@@ -30,9 +30,20 @@ export const AuthProvider = ({ children }) => {
     fetchUserInfo();
   }, []);
 
+  const login = (userData) => {
+    setUserInfo(userData);
+  };
+
+  const logout = () => {
+    cookie.remove('authToken');
+    setUserInfo(null);
+  };
+
   return (
-    <AuthContext.Provider value={{ userInfo, fetchUserInfo }}>
+    <AuthContext.Provider value={{ userInfo, login, logout, fetchUserInfo }}>
       {children}
     </AuthContext.Provider>
   );
 };
+
+export const useAuth = () => useContext(AuthContext);

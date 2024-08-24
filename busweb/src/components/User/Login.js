@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Form, Button, Container, Row, Col, Alert, Modal } from 'react-bootstrap';
 import { useLocation, useNavigate } from 'react-router-dom'; // Import useNavigate
 import { authAPIs, endpoints } from '../../configs/APIs';
+import { useAuth } from '../AuthContext';
 import { Cookies } from 'react-cookie';
 import styles from '../Style';
+
 
 const cookies = new Cookies(); // Initialize Cookies
 
@@ -13,9 +15,9 @@ const Login = () => {
   const [error, setError] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
-  const [token, setToken] = useState('');
   const location = useLocation(); // Access location object
   const navigate = useNavigate(); // Initialize navigate
+  const { login } = useAuth();
 
   useEffect(() => {
     if (location.state) {
@@ -27,7 +29,6 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Create FormData object
     const formData = new FormData();
     formData.append('username', username);
     formData.append('password', password);
@@ -35,16 +36,24 @@ const Login = () => {
     try {
       const response = await authAPIs().post(endpoints.login, formData, {
         headers: {
-          'Content-Type': 'multipart/form-data' // Set header to indicate form-data
+          'Content-Type': 'multipart/form-data'
         }
       });
 
       if (response.status === 200) {
-        // Token is the response data directly
         const token = response.data;
-        // Save token in cookies
         cookies.set('authToken', token, { path: '/' });
-        setToken(token);
+        
+        // Fetch user data after successful login
+        const userResponse = await authAPIs().get(endpoints['current-user'], {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        
+        // Update AuthContext
+        login(userResponse.data);
+        
         setModalMessage('Đăng nhập thành công!');
         setShowModal(true);
       } else {

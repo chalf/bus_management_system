@@ -5,47 +5,15 @@ import { FaUser } from 'react-icons/fa';
 import cookie from 'react-cookies';
 import axios from 'axios';
 import { authAPIs, endpoints } from '../configs/APIs'; 
+import { useAuth } from './AuthContext';
 
 const NavBar = () => {
-  const [userInfo, setUserInfo] = useState(null);
-  const [error, setError] = useState('');
+  const { userInfo, logout } = useAuth();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchUserInfo = async () => {
-      try {
-        const token = cookie.load('authToken'); 
-        if (token) {
-          const response = await authAPIs().get(endpoints['current-user'], {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-          setUserInfo(response.data);
-        } else {
-          setUserInfo(null); // Clear user info if no token is present
-        }
-      } catch (err) {
-        setError('Unable to fetch user information.');
-        console.error('Error fetching user info:', err);
-      }
-    };
-
-    fetchUserInfo();
-
-    // Watch for changes in the authToken cookie and refetch user info
-    const cookieChangeListener = () => fetchUserInfo();
-    window.addEventListener('cookiechange', cookieChangeListener);
-
-    return () => {
-      window.removeEventListener('cookiechange', cookieChangeListener);
-    };
-  }, []);
-
   const handleLogout = () => {
-    cookie.remove('authToken'); 
-    setUserInfo(null); 
-    navigate('/login'); 
+    logout(); // Use the logout function from AuthContext
+    navigate('/login');
   };
 
   return (

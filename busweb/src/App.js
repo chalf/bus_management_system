@@ -7,21 +7,24 @@ import Register from "./components/User/Register";
 import Login from "./components/User/Login";
 import HomePage from "./components/HomePage";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { AuthProvider } from "./components/AuthContext";
 
 const App = () => {
   return (
-    <Router>
-      <NavBar />
-      <div className="App">
-        <GoogleMapsScript />
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/user-info" element={<UserInfo />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
-        </Routes>
-      </div>
-    </Router>
+    <AuthProvider>
+      <Router>
+        <NavBar />
+        <div className="App">
+          <GoogleMapsScript />
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/user-info" element={<UserInfo />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/login" element={<Login />} />
+          </Routes>
+        </div>
+      </Router>
+    </AuthProvider>
   );
 };
 
