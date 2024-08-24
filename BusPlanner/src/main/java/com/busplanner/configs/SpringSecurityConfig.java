@@ -37,7 +37,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
     "com.busplanner.repositories",
     "com.busplanner.services",
     "com.busplanner.component",
-    "com.busplanner.validator",})
+    "com.busplanner.validator",}
+)
 
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
