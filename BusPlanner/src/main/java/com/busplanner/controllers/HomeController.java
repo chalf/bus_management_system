@@ -24,7 +24,7 @@ public class HomeController {
 //    @GetMapping("/")
     @RequestMapping("/")
     public String index(Model model){
-        return "baseLayout";
+        return "index";
     }
     
     

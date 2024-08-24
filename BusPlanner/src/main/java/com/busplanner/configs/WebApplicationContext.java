@@ -32,6 +32,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
+import org.springframework.web.servlet.view.tiles3.TilesConfigurer;
 
 /**
  *
@@ -61,6 +62,13 @@ public class WebApplicationContext implements WebMvcConfigurer {
         resolver.setPrefix("/WEB-INF/pages/");
         resolver.setSuffix(".jsp");
         return resolver;
+    }
+    
+    @Bean
+    public TilesConfigurer tilesConfigurer() {
+        TilesConfigurer configurer = new TilesConfigurer();
+        configurer.setDefinitions("/WEB-INF/tiles.xml");
+        return configurer;
     }
 
     @Bean
