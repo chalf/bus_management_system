@@ -47,7 +47,7 @@ const Login = () => {
         // Fetch user data after successful login
         const userResponse = await authAPIs().get(endpoints['current-user'], {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `${token}`,
           },
         });
         
