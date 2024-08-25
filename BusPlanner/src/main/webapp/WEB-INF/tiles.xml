@@ -3,19 +3,21 @@
 "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
 <tiles-definitions>
     <definition name="baseLayout" template="/WEB-INF/layout/base.jsp">
-        <put-attribute name="header" value="/WEB-INF/layout/header.jsp" />
+        <put-attribute name="title" value="Trang chủ" />
+        <put-attribute name="header" 
+                       value="/WEB-INF/layout/header.jsp" />
         <put-attribute name="content" value="HELLO, Successfully" />
-        <put-attribute name="footer" value="/WEB-INF/layout/footer.jsp" />
+        <put-attribute name="footer" 
+                       value="/WEB-INF/layout/footer.jsp" />
     </definition>
     
-    <definition name="index" extends="baseLayout">
-        <put-attribute name="title" value="Trang chủ" />
-        <put-attribute name="content" value="/WEB-INF/welcome.jsp" />
+    <definition name ="login" extends="baseLayout">
+        <put-attribute name="title" value="Trang quản trị" />
+        <put-attribute name="content" value="/WEB-INF/pages/login.jsp" />
     </definition>
-
-    <!-- New definition for bus page -->
-    <definition name="busPage" extends="baseLayout">
-        <put-attribute name="title" value="Bus List" />
-        <put-attribute name="content" value="/WEB-INF/pages/bus.jsp" />
+    
+    <definition name="admin" extends="baseLayout">
+        <put-attribute name="title" value="Quản trị tài nguyên" />
+        <put-attribute name="content" value="/WEB-INF/pages/admin.jsp" />
     </definition>
 </tiles-definitions>

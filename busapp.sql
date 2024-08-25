@@ -79,8 +79,9 @@ DROP TABLE IF EXISTS `routes`;
 CREATE TABLE `routes` (
   `route_id` int NOT NULL AUTO_INCREMENT,
   `route_name` varchar(100) NOT NULL,
-  `start_point` varchar(100) NOT NULL,
-  `end_point` varchar(100) NOT NULL,
+  `direction` enum('outbound','inbound') NOT NULL,
+  `start_point` varchar(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  `end_point` varchar(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
   `description` text,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -108,6 +109,7 @@ CREATE TABLE `routestops` (
   `route_stop_id` int NOT NULL AUTO_INCREMENT,
   `route_id` int NOT NULL,
   `stop_id` int NOT NULL,
+  `direction` enum('outbound','inbound') NOT NULL,
   `order` int NOT NULL,
   PRIMARY KEY (`route_stop_id`),
   KEY `route_id` (`route_id`),
@@ -137,6 +139,7 @@ CREATE TABLE `schedules` (
   `schedule_id` int NOT NULL AUTO_INCREMENT,
   `route_id` int NOT NULL,
   `bus_id` int NOT NULL,
+  `direction` enum('outbound','inbound') NOT NULL,
   `departure_time` time NOT NULL,
   `arrival_time` time NOT NULL,
   `day_of_week` enum('Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday') NOT NULL,
@@ -230,13 +233,13 @@ CREATE TABLE `users` (
   `email` varchar(100) NOT NULL,
   `full_name` varchar(100) NOT NULL,
   `avatar_url` varchar(255) DEFAULT NULL,
-  `role` enum('citizen','admin') NOT NULL,
+  `role` enum('ROLE_CITIZEN','ROLE_ADMIN') NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `username` (`username`),
-  UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  UNIQUE KEY `email_UNIQUE` (`email`)
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -245,7 +248,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'admin','123456','admin@busplanner.com','Duong Hieu',NULL,'admin','2024-08-12 03:26:07','2024-08-12 03:26:07');
+INSERT INTO `users` VALUES (5,'hieu','$2a$10$DcjPJIdYl9Er1LFkmDwM/OuQDNMyryB.S97KanI7FGZQX6SOovGKu','hieu@gmail.com','Duong Hieu','https://res.cloudinary.com/dsfdkyanf/image/upload/v1724040995/bnsygaltrlurcrvhxmso.jpg','ROLE_CITIZEN','2024-08-19 04:16:36','2024-08-24 13:54:48'),(6,'test','$2a$10$r20lXo5VpNOIC640329L9.VGfCrWy8fnCZvJgyYyYa12x33Qfjkmi','test@gmail.com','dddddd','https://res.cloudinary.com/dsfdkyanf/image/upload/v1724041225/ppnzy0o2dajxxtzt4dju.jpg','ROLE_CITIZEN','2024-08-19 04:20:26','2024-08-24 13:54:48'),(15,'test00','$2a$10$gVzMqHWmOYS.5pX0l1bXzOZJrQV66X9HiWFoFS5gtFw7Is9ynlyKC','tt44@gmail.com','Hiếu','https://res.cloudinary.com/dsfdkyanf/image/upload/v1724077513/wuzmacetkufufatnmtym.jpg','ROLE_CITIZEN','2024-08-19 14:25:16','2024-08-24 13:54:48'),(26,'admin','$2a$10$hOoe2YqviKEso4CEWAZmpuwT5woHgXHZmqU9AnlB7smkDDxky3rly','admin@busplanner.com','Duong Hieu','https://res.cloudinary.com/dsfdkyanf/image/upload/v1724388467/nxvpkvhr04zzkn3exsl6.jpg','ROLE_ADMIN','2024-08-23 04:47:48','2024-08-24 13:55:22');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -258,4 +261,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-08-14 15:28:30
+-- Dump completed on 2024-08-25  9:49:28

@@ -8,24 +8,14 @@
 <%@taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@taglib prefix="tiles" uri="http://tiles.apache.org/tags-tiles" %>
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><tiles:getAsString name="title"/></title>
-    <link rel="stylesheet" href="<c:url value='/resources/css/style.css'/>">
-</head>
-<body>
-    <header>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title><tiles:insertAttribute name="title" /></title>
+    </head>
+    <body>
         <tiles:insertAttribute name="header" />
-    </header>
-    
-    <main>
         <tiles:insertAttribute name="content" />
-    </main>
-    
-    <footer>
         <tiles:insertAttribute name="footer" />
-    </footer>
-</body>
+    </body>
 </html>

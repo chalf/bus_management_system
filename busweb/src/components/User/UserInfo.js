@@ -14,7 +14,7 @@ const UserInfo = () => {
         const token = cookie.load('authToken'); // Load token from cookies
         const response = await authAPIs().get(endpoints['current-user'], {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `${token}`,
           },
         });
         setUserInfo(response.data);

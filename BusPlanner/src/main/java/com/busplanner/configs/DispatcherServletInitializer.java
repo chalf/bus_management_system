@@ -19,6 +19,7 @@ public class DispatcherServletInitializer extends AbstractAnnotationConfigDispat
             TilesConfig.class,
             CloudinaryConfig.class,
             SpringSecurityConfig.class,
+            JwtSecurityConfig.class,
             
         };
     }

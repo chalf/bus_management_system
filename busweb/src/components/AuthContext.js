@@ -13,7 +13,7 @@ export const AuthProvider = ({ children }) => {
       if (token) {
         const response = await authAPIs().get(endpoints['current-user'], {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `${token}`,
           },
         });
         setUserInfo(response.data);
