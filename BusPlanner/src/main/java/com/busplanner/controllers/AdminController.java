@@ -26,9 +26,7 @@ public class AdminController {
 
     @GetMapping("/admin")
     public String adminPage(Principal principal) {
-        if (principal != null) {
-            return "admin"; // Trả về trang admin
-        }
-        return "accessDenied"; // Trả về trang từ chối truy cập nếu không phải admin
+        return "admin"; // Trả về trang admin
+
     }
 }

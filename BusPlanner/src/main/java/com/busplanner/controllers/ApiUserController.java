@@ -72,7 +72,7 @@ public class ApiUserController {
             @RequestPart("file") MultipartFile file) {
         userRegister.setFile(file);
         //mặc định tạo user có role là citizen
-        userRegister.setRole("citizen");
+        userRegister.setRole("ROLE_CITIZEN");
         Users user = this.userService.addUser(userRegister);
         
         if (user.getUserId() == Users.duplicateUsername())
