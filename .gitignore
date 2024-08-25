@@ -23,3 +23,7 @@
 hs_err_pid*
 replay_pid*
 /BusPlanner/target/
+node_modules/
+build/
+.env
+/nbproject/private/
