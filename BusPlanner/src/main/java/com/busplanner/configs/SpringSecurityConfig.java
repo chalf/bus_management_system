@@ -4,10 +4,6 @@
  */
 package com.busplanner.configs;
 
-import com.busplanner.filter.JwtAuthorizationFilter;
-import com.busplanner.busplanner.resources.LoginSuccessHandler;
-import com.busplanner.component.JwtService;
-import java.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -18,16 +14,8 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
  *
@@ -46,8 +34,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private org.springframework.security.core.userdetails.UserDetailsService userDetailsService;
-    @Autowired
-    private JwtService jwtService;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -69,18 +55,16 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        http.csrf().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) // Sử dụng session cho form login
-                .and()
-                .authorizeRequests()
-                .antMatchers("/admin").authenticated()
-                .and()
-                .formLogin().loginPage("/")
-                    .usernameParameter("username")
-                    .passwordParameter("password")
-                    .defaultSuccessUrl("/admin")
-                    .failureUrl("/?error");
+        http.formLogin().loginPage("/")
+                .usernameParameter("username")
+                .passwordParameter("password")
+                .defaultSuccessUrl("/admin")
+                .failureUrl("/?error");
         http.logout().logoutSuccessUrl("/");
+        http.exceptionHandling().accessDeniedPage("/?accessDenied");
+        http.authorizeRequests().antMatchers("/admin/**").hasRole("ADMIN");
+        
+        http.csrf().disable();
     }
 
 }

@@ -25,6 +25,12 @@
                 <spring:message code="webapp.login.error" />
             </div>
         </c:if>
+        <c:if test="${param.accessDenied != null}">
+            <div class="alert alert-danger">
+                You are not admin
+            </div>
+        </c:if>
+
 
         <spring:url value="/" var="adminLogin"/>
         <form action="${adminLogin}" method="post" id="loginForm">

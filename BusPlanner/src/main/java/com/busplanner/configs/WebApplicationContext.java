@@ -129,9 +129,5 @@ public class WebApplicationContext implements WebMvcConfigurer {
         registry.addResourceHandler("/images/**").addResourceLocations("/resources/images/");
         
     }
-     @Bean(name = "mvcHandlerMappingIntrospector")
-    public HandlerMappingIntrospector mvcHandlerMappingIntrospector() {
-        return new HandlerMappingIntrospector();
-    }
 
 }
