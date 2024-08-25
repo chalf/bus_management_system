@@ -35,7 +35,7 @@ public class BusRepositoryImplement implements BusRepository{
         CriteriaBuilder criteria = s.getCriteriaBuilder();
         CriteriaQuery<Buses> query = criteria.createQuery(Buses.class);
         Root<Buses> busRoot = query.from(Buses.class);
-        
+        query.select(busRoot);
         Query<Buses> q = s.createQuery(query);
         return q.getResultList();
         

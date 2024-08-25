@@ -20,4 +20,10 @@
         <put-attribute name="title" value="Quản trị tài nguyên" />
         <put-attribute name="content" value="/WEB-INF/pages/admin.jsp" />
     </definition>
+    
+    <definition name="busPage" extends="baseLayout">
+        <put-attribute name="title" value="Quản lý xe buýt" />
+        <put-attribute name="content" value="/WEB-INF/pages/admin/adminListBus.jsp" />
+    </definition>
+    
 </tiles-definitions>
