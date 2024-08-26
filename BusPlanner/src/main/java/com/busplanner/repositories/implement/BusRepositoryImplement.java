@@ -23,11 +23,11 @@ import org.springframework.transaction.annotation.Transactional;
  * @author ASUS
  */
 @Repository
-public class BusRepositoryImplement implements BusRepository{
-    
+public class BusRepositoryImplement implements BusRepository {
+
     @Autowired
     private LocalSessionFactoryBean sessionFactory;
-    
+
     @Override
     @Transactional
     public List<Buses> getListBus() {
@@ -38,17 +38,18 @@ public class BusRepositoryImplement implements BusRepository{
         query.select(busRoot);
         Query<Buses> q = s.createQuery(query);
         return q.getResultList();
-        
+
     }
 
     @Override
     @Transactional
     public void addOrUpdateBus(Buses bus) {
         Session s = this.sessionFactory.getObject().getCurrentSession();
-        if(bus.getBusId() != null)
+        if (bus.getBusId() != null) {
             s.update(bus);
-        else
+        } else {
             s.save(bus);
+        }
     }
 
     @Override
@@ -73,12 +74,11 @@ public class BusRepositoryImplement implements BusRepository{
         CriteriaBuilder criteria = s.getCriteriaBuilder();
         CriteriaQuery<Buses> query = criteria.createQuery(Buses.class);
         Root<Buses> root = query.from(Buses.class);
-        
-        
+
         Predicate predicate = criteria.equal(root.get("routeId").get("routeId"), routeId);
         query.where(predicate);
-        
+
         return s.createQuery(query).getResultList();
     }
-    
+
 }

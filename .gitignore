@@ -27,3 +27,6 @@ node_modules/
 build/
 .env
 /nbproject/private/
+
+# sensitive data
+config.properties

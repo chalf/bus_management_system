@@ -17,4 +17,5 @@ public interface StopRepository {
     void addOrUpdateStop(Stops stop);
     Stops getStopById(int id);
     void deleteStop(int id);
+    List<Stops> getListStop();
 }

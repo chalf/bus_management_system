@@ -8,6 +8,7 @@ import com.busplanner.configs.PaginationConfigs;
 import com.busplanner.pojo.Routes;
 import com.busplanner.repositories.RouteRepository;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -80,6 +81,10 @@ public class RouteRepositoryImplement implements RouteRepository {
     @Transactional
     public void addOrUpdateRoute(Routes route) {
         Session s = this.sessionFactory.getObject().getCurrentSession();
+        if (route.getCreatedAt() == null) {
+            route.setCreatedAt(new Date());
+        }
+        route.setUpdatedAt(new Date());
         if (route.getRouteId() != null) {
             s.update(route);
         } else {

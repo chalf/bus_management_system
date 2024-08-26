@@ -4,6 +4,7 @@
  */
 package com.busplanner.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -68,6 +69,7 @@ public class Stops implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedAt;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "stopId")
+    @JsonIgnore
     private Set<Routestops> routestopsSet;
 
     public Stops() {

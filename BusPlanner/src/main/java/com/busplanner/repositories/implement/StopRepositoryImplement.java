@@ -8,6 +8,7 @@ import com.busplanner.configs.PaginationConfigs;
 import com.busplanner.pojo.Stops;
 import com.busplanner.repositories.StopRepository;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -79,6 +80,10 @@ public class StopRepositoryImplement implements StopRepository{
     @Transactional
     public void addOrUpdateStop(Stops stop) {
         Session s = this.sessionFactory.getObject().getCurrentSession();
+        if (stop.getCreatedAt() == null) {
+            stop.setCreatedAt(new Date());
+        }
+        stop.setUpdatedAt(new Date());
         if (stop.getStopId() != null)
             s.update(stop);
         else
@@ -98,5 +103,13 @@ public class StopRepositoryImplement implements StopRepository{
         Session s = this.sessionFactory.getObject().getCurrentSession();
         Stops stop = this.getStopById(id);
         s.delete(stop);
+    }
+
+    @Override
+    @Transactional
+    public List<Stops> getListStop() {
+        Session s = this.sessionFactory.getObject().getCurrentSession();
+        Query<Stops> stops = s.createNamedQuery("Stops.findAll");
+        return stops.getResultList();
     }
 }
