@@ -30,5 +30,9 @@
         <put-attribute name="title" value="Thêm dữ liệu thành công" />
         <put-attribute name="content" value="/WEB-INF/pages/successAdding.jsp" />
     </definition>
+    <definition name="routePage" extends="baseLayout">
+        <put-attribute name="title" value="Quản lý tuyến đường" />
+        <put-attribute name="content" value="/WEB-INF/pages/admin/listRoute.jsp" />
+    </definition>
     
 </tiles-definitions>

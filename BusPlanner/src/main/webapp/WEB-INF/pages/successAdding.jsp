@@ -12,6 +12,6 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     </head>
     <body>
-        <h3 style="padding: 30px; color: lightblue;">Thêm dữ liệu thành công, bấm vào <a href="<c:url value="/admin/buses"/>">đây </a> để xem danh sách</h3>
+        <h3 style="padding: 30px; color: lightblue;">Thêm dữ liệu thành công, bấm vào <a href="<c:url value="/admin"/>">đây </a> để trở về trang chủ.</h3>
     </body>
 </html>

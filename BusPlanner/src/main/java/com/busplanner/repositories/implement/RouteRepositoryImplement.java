@@ -21,16 +21,12 @@ import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- *
- * @author ASUS
- */
 @Repository
 public class RouteRepositoryImplement implements RouteRepository {
-    
+
     @Autowired
     private LocalSessionFactoryBean sessionFactory;
-    
+
     @Override
     @Transactional
     public List<Routes> getListRoutes(Map<String, String> params) {
@@ -84,10 +80,11 @@ public class RouteRepositoryImplement implements RouteRepository {
     @Transactional
     public void addOrUpdateRoute(Routes route) {
         Session s = this.sessionFactory.getObject().getCurrentSession();
-        if(route.getRouteId() != null)
+        if (route.getRouteId() != null) {
             s.update(route);
-        else
+        } else {
             s.save(route);
+        }
     }
 
     @Override
@@ -102,9 +99,9 @@ public class RouteRepositoryImplement implements RouteRepository {
     public void deleteRouteById(int id) {
         Session s = this.sessionFactory.getObject().getCurrentSession();
         Routes route = getRouteById(id);
-        if(route != null){
+        if (route != null) {
             s.delete(route);
         }
-            
+
     }
 }
