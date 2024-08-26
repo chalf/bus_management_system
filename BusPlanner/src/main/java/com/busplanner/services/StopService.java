@@ -17,4 +17,5 @@ public interface StopService {
     void addorUpdateStop(Stops stop);
     public Stops getStopById(int id);
     void deleteStop(int id);
+    Stops findNearestStop(double userLatitude, double userLongitude);
 }

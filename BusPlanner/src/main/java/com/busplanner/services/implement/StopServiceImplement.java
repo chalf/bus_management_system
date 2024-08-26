@@ -4,6 +4,7 @@
  */
 package com.busplanner.services.implement;
 
+import com.busplanner.busplanner.resources.Utils;
 import com.busplanner.pojo.Stops;
 import com.busplanner.repositories.StopRepository;
 import com.busplanner.services.StopService;
@@ -18,11 +19,11 @@ import org.springframework.transaction.annotation.Transactional;
  * @author ASUS
  */
 @Service
-public class StopServiceImplement  implements StopService{
+public class StopServiceImplement implements StopService {
 
     @Autowired
     private StopRepository stopRepository;
-    
+
     @Override
     @Transactional
     public List<Stops> retrieveStop(Map<String, String> params) {
@@ -46,5 +47,25 @@ public class StopServiceImplement  implements StopService{
     public void deleteStop(int id) {
         stopRepository.deleteStop(id);
     }
-    
+
+    @Override
+    public Stops findNearestStop(double userLatitude, double userLongitude) {
+        List<Stops> stops = stopRepository.getListStop();
+        Stops nearestStop = null;
+        double minDistance = Double.MAX_VALUE;
+
+        for (Stops stop : stops) {
+            // Chuyển đổi BigDecimal sang double
+            double stopLat = stop.getLatitude().doubleValue();
+            double stopLon = stop.getLongitude().doubleValue();
+            double distance = Utils.calculateDistance(userLatitude, userLongitude, stopLat, stopLon);
+            if (distance < minDistance) {
+                minDistance = distance;
+                nearestStop = stop;
+            }
+        }
+
+        return nearestStop;
+    }
+
 }
