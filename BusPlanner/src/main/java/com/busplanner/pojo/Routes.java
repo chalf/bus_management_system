@@ -38,12 +38,6 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "Routes.findByUpdatedAt", query = "SELECT r FROM Routes r WHERE r.updatedAt = :updatedAt")})
 public class Routes implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "route_id")
-    private Integer routeId;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 100)
@@ -68,6 +62,13 @@ public class Routes implements Serializable {
     @Size(max = 65535)
     @Column(name = "description")
     private String description;
+
+    private static final long serialVersionUID = 1L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "route_id")
+    private Integer routeId;
     @Column(name = "created_at")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
@@ -104,21 +105,8 @@ public class Routes implements Serializable {
         this.routeId = routeId;
     }
 
-    public String getRouteName() {
-        return routeName;
-    }
 
-    public void setRouteName(String routeName) {
-        this.routeName = routeName;
-    }
 
-    public String getDirection() {
-        return direction;
-    }
-
-    public void setDirection(String direction) {
-        this.direction = direction;
-    }
 
     public String getStartPoint() {
         return startPoint;
@@ -136,13 +124,6 @@ public class Routes implements Serializable {
         this.endPoint = endPoint;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
 
     public Date getCreatedAt() {
         return createdAt;
@@ -207,6 +188,32 @@ public class Routes implements Serializable {
     @Override
     public String toString() {
         return "com.busplanner.pojo.Routes[ routeId=" + routeId + " ]";
+    }
+
+    public String getRouteName() {
+        return routeName;
+    }
+
+    public void setRouteName(String routeName) {
+        this.routeName = routeName;
+    }
+
+    public String getDirection() {
+        return direction;
+    }
+
+    public void setDirection(String direction) {
+        this.direction = direction;
+    }
+
+    
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
     
 }

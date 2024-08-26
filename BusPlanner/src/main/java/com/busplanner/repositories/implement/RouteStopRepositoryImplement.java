@@ -22,7 +22,8 @@ import org.springframework.transaction.annotation.Transactional;
  * @author ASUS
  */
 @Repository
-public class RouteStopRepositoryImplement implements RouteStopRepository{
+public class RouteStopRepositoryImplement implements RouteStopRepository {
+
     @Autowired
     private LocalSessionFactoryBean sessionFactory;
 
@@ -73,9 +74,14 @@ public class RouteStopRepositoryImplement implements RouteStopRepository{
         CriteriaBuilder criteriaBuilder = s.getCriteriaBuilder();
         CriteriaQuery<Routestops> criteriaQuery = criteriaBuilder.createQuery(Routestops.class);
         Root<Routestops> root = criteriaQuery.from(Routestops.class);
-        
+
+        // Define the predicate to filter by routeId
         Predicate predicate = criteriaBuilder.equal(root.get("routeId").get("routeId"), routeId);
         criteriaQuery.where(predicate);
+
+        // Add an Order clause to sort by the 'order' field
+        criteriaQuery.orderBy(criteriaBuilder.asc(root.get("stopOrder")));
+
         return s.createQuery(criteriaQuery).getResultList();
     }
 
@@ -86,10 +92,10 @@ public class RouteStopRepositoryImplement implements RouteStopRepository{
         CriteriaBuilder criteriaBuilder = s.getCriteriaBuilder();
         CriteriaQuery<Routestops> criteriaQuery = criteriaBuilder.createQuery(Routestops.class);
         Root<Routestops> root = criteriaQuery.from(Routestops.class);
-        
+
         Predicate predicate = criteriaBuilder.equal(root.get("stopId").get("stopId"), stopId);
         criteriaQuery.where(predicate);
         return s.createQuery(criteriaQuery).getResultList();
     }
-    
+
 }

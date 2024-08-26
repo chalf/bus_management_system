@@ -5,7 +5,11 @@
 package com.busplanner.controllers;
 
 import com.busplanner.pojo.Routes;
+import com.busplanner.pojo.Routestops;
+import com.busplanner.pojo.Stops;
 import com.busplanner.services.RouteService;
+import com.busplanner.services.RouteStopService;
+import com.busplanner.services.StopService;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +30,12 @@ public class RouteController {
 
     @Autowired
     private RouteService routeService;
+
+    @Autowired
+    private RouteStopService routestopService;
+
+    @Autowired
+    private StopService stopService;
 
     @GetMapping("/admin/routes")
     public String busList(Model model,
@@ -54,8 +64,9 @@ public class RouteController {
 
         return "routePage";
     }
+
     @PostMapping("/admin/routes")
-    public String addRoute(Model model, @ModelAttribute(value = "route") Routes route){
+    public String addRoute(Model model, @ModelAttribute(value = "route") Routes route) {
         try {
             routeService.addOrUpdateRoute(route);
             return "successAdding";
@@ -64,4 +75,41 @@ public class RouteController {
         }
         return "routePage";
     }
+
+    @GetMapping("/admin/route/{id}")
+    public String getRouteDetails(@PathVariable("id") int id, Model model) {
+        Routes route = routeService.getRouteById(id);
+        List<Routestops> routeStops = routestopService.getRouteStopsByRouteId(id);
+        List<Stops> stops = stopService.retrieveStop(null);
+
+        int nextOrder = routeStops.isEmpty() ? 1 : routeStops.get(routeStops.size() - 1).getStopOrder() + 1;
+
+        model.addAttribute("route", route);
+        model.addAttribute("stops", stops);
+        model.addAttribute("routeStops", routeStops);
+        model.addAttribute("nextOrder", nextOrder);
+        model.addAttribute("routeStop", new Routestops()); // Add this line
+
+        return "routeDetailPage";
+    }
+
+    @PostMapping("/admin/routes/{id}/")
+    public String addRouteStop(@PathVariable("id") int routeId,
+            @RequestParam("stopId") int stopId,
+            @RequestParam("stopOrder") int order,
+            @RequestParam("direction") String direction) {
+        Routes route = routeService.getRouteById(routeId);
+        Stops stop = stopService.getStopById(stopId);
+
+        Routestops routeStop = new Routestops();
+        routeStop.setRouteId(route);
+        routeStop.setStopId(stop);
+        routeStop.setStopOrder(order);
+        routeStop.setDirection(direction);
+
+        routestopService.addOrUpdateRouteStop(routeStop);
+
+        return "successAdding";
+    }
+
 }
