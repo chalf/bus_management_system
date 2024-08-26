@@ -23,19 +23,19 @@
 </head>
 <body>
     <div class="container mt-5">
-        <h1 class="text-center mb-4">Trang Chủ Quản Lý</h1>
+        <h1 class="text-center mb-4"><spring:message code="admin.dashboard.title"/></h1>
         <div class="list-group">
             <a href="<c:url value="/admin/buses" />" class="list-group-item list-group-item-action d-flex align-items-center">
-                <i class="bi bi-bus-front me-3"></i> Quản lý Xe buýt
+                <i class="bi bi-bus-front me-3"></i> <spring:message code="admin.bus.heading"/>
             </a>
             <a href="<c:url value="/admin/routes" />" class="list-group-item list-group-item-action d-flex align-items-center">
-                <i class="bi bi-map me-3"></i> Quản lý Tuyến đường
+                <i class="bi bi-map me-3"></i> <spring:message code="admin.route.heading"/>
             </a>
             <a href="<c:url value="/admin/stops" />" class="list-group-item list-group-item-action d-flex align-items-center">
-                <i class="bi bi-geo-alt me-3"></i> Quản lý Điểm dừng
+                <i class="bi bi-geo-alt me-3"></i> <spring:message code="admin.stopsList.heading"/>
             </a>
             <a href="<c:url value="/admin/users" />" class="list-group-item list-group-item-action d-flex align-items-center">
-                <i class="bi bi-people me-3"></i> Quản lý Người dùng
+                <i class="bi bi-people me-3"></i> <spring:message code="admin.user.heading" />
             </a>
         </div>
     </div>

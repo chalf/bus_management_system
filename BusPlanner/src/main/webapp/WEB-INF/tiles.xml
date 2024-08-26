@@ -23,7 +23,12 @@
     
     <definition name="busPage" extends="baseLayout">
         <put-attribute name="title" value="Quản lý xe buýt" />
-        <put-attribute name="content" value="/WEB-INF/pages/admin/adminListBus.jsp" />
+        <put-attribute name="content" value="/WEB-INF/pages/admin/listBus.jsp" />
+    </definition>
+    
+    <definition name="successAdding" extends="baseLayout">
+        <put-attribute name="title" value="Thêm dữ liệu thành công" />
+        <put-attribute name="content" value="/WEB-INF/pages/successAdding.jsp" />
     </definition>
     
 </tiles-definitions>

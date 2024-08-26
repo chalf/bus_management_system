@@ -5,6 +5,7 @@
 package com.busplanner.services.implement;
 
 import com.busplanner.pojo.Routes;
+import com.busplanner.repositories.RouteRepository;
 import com.busplanner.services.RouteService;
 import java.util.List;
 import java.util.Map;
@@ -20,29 +21,29 @@ import org.springframework.transaction.annotation.Transactional;
 public class RouteServiceImplement implements RouteService{
     
     @Autowired
-    private RouteService routeService;
+    private RouteRepository routeRepository;
 
     @Override
     @Transactional
     public List<Routes> getListRoutes(Map<String, String> params) {
-        return routeService.getListRoutes(params);
+        return routeRepository.getListRoutes(params);
     }
 
     @Override
     @Transactional
     public void addOrUpdateRoute(Routes route) {
-        routeService.addOrUpdateRoute(route);
+        routeRepository.addOrUpdateRoute(route);
     }
 
     @Override
     @Transactional
     public Routes getRouteById(int id) {
-        return routeService.getRouteById(id);
+        return routeRepository.getRouteById(id);
     }
 
     @Override
     public void deleteRouteById(int id) {
-        routeService.deleteRouteById(id);
+        routeRepository.deleteRouteById(id);
     }
     
 }
