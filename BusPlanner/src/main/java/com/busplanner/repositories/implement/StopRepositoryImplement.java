@@ -99,6 +99,4 @@ public class StopRepositoryImplement implements StopRepository{
         Stops stop = this.getStopById(id);
         s.delete(stop);
     }
-    
-    
 }

@@ -21,7 +21,7 @@ import javax.validation.constraints.Size;
 
 /**
  *
- * @author Admin
+ * @author ASUS
  */
 @Entity
 @Table(name = "routestops")
@@ -29,7 +29,7 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "Routestops.findAll", query = "SELECT r FROM Routestops r"),
     @NamedQuery(name = "Routestops.findByRouteStopId", query = "SELECT r FROM Routestops r WHERE r.routeStopId = :routeStopId"),
     @NamedQuery(name = "Routestops.findByDirection", query = "SELECT r FROM Routestops r WHERE r.direction = :direction"),
-    @NamedQuery(name = "Routestops.findByOrder", query = "SELECT r FROM Routestops r WHERE r.order = :order")})
+    @NamedQuery(name = "Routestops.findByStopOrder", query = "SELECT r FROM Routestops r WHERE r.stopOrder = :stopOrder")})
 public class Routestops implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -45,8 +45,8 @@ public class Routestops implements Serializable {
     private String direction;
     @Basic(optional = false)
     @NotNull
-    @Column(name = "order")
-    private int order;
+    @Column(name = "stop_order")
+    private int stopOrder;
     @JoinColumn(name = "route_id", referencedColumnName = "route_id")
     @ManyToOne(optional = false)
     private Routes routeId;
@@ -61,10 +61,10 @@ public class Routestops implements Serializable {
         this.routeStopId = routeStopId;
     }
 
-    public Routestops(Integer routeStopId, String direction, int order) {
+    public Routestops(Integer routeStopId, String direction, int stopOrder) {
         this.routeStopId = routeStopId;
         this.direction = direction;
-        this.order = order;
+        this.stopOrder = stopOrder;
     }
 
     public Integer getRouteStopId() {
@@ -83,12 +83,12 @@ public class Routestops implements Serializable {
         this.direction = direction;
     }
 
-    public int getOrder() {
-        return order;
+    public int getStopOrder() {
+        return stopOrder;
     }
 
-    public void setOrder(int order) {
-        this.order = order;
+    public void setStopOrder(int stopOrder) {
+        this.stopOrder = stopOrder;
     }
 
     public Routes getRouteId() {
