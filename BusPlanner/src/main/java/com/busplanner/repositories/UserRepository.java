@@ -5,6 +5,8 @@
 package com.busplanner.repositories;
 
 import com.busplanner.pojo.Users;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -17,4 +19,5 @@ public interface UserRepository {
     boolean authUser(String username, String password);
     Users getUserByUsername(String username);
     boolean existsByEmail(String email);
+    List<Users> getListUser(Map<String, String> params);
 }
