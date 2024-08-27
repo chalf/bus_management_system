@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 /**
@@ -42,5 +43,15 @@ public class BusController {
             model.addAttribute("errorMessage", e.getMessage());
         }
         return "busPage";
+    }
+    @PostMapping("/admin/buses/delete/{busId}")
+    public String deleteBus(@PathVariable("busId") int busId, Model model){
+        try {
+            busService.deleteBusById(busId);
+            return "redirect:/admin/buses";
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "busPage";
+        }
     }
 }

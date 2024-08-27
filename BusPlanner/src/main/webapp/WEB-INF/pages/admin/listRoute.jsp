@@ -91,9 +91,11 @@
                                             <i class="fas fa-edit"></i> Chi tiết
                                         </a>
 
-                                        <a href="#" class="btn btn-sm btn-danger">
-                                            <i class="fas fa-trash"></i> Xóa
-                                        </a>
+                                        <form action="${pageContext.request.contextPath}/admin/routes/delete/${route.routeId}" method="post" style="display:inline;" onsubmit="return confirmDelete();">
+                                            <button type="submit" class="btn btn-sm btn-danger">
+                                                <i class="fas fa-trash"></i> Xóa
+                                            </button>
+                                        </form>
                                     </td>
                                 </tr>
                             </c:forEach>
@@ -111,24 +113,27 @@
         <script src="https://kit.fontawesome.com/a076d05399.js"></script>
         <!-- Highlighting Script -->
         <script>
-            $(document).ready(function () {
-                var searchText = "${param.q}";
-                if (searchText) {
-                    $(".highlight-text").each(function () {
-                        var text = $(this).text();
-                        var regex = new RegExp(searchText, "gi");
-                        var newText = text.replace(regex, function (matchedText) {
-                            return "<span class='highlight'>" + matchedText + "</span>";
-                        });
-                        $(this).html(newText);
-                    });
-                }
+                                            $(document).ready(function () {
+                                                var searchText = "${param.q}";
+                                                if (searchText) {
+                                                    $(".highlight-text").each(function () {
+                                                        var text = $(this).text();
+                                                        var regex = new RegExp(searchText, "gi");
+                                                        var newText = text.replace(regex, function (matchedText) {
+                                                            return "<span class='highlight'>" + matchedText + "</span>";
+                                                        });
+                                                        $(this).html(newText);
+                                                    });
+                                                }
 
-                // Toggle form visibility
-                $("#addRouteBtn").click(function () {
-                    $("#addRouteForm").toggle();
-                });
-            });
+                                                // Toggle form visibility
+                                                $("#addRouteBtn").click(function () {
+                                                    $("#addRouteForm").toggle();
+                                                });
+                                            });
+                                            function confirmDelete() {
+                                                return confirm("Bạn chắc chắn muốn xóa?");
+                                            }
         </script>
     </body>
 </html>

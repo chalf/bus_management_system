@@ -31,20 +31,20 @@
         <put-attribute name="content" value="/WEB-INF/pages/successAdding.jsp" />
     </definition>
     <definition name="routePage" extends="baseLayout">
-        <put-attribute name="title" value="Quản lý tuyến đường" />
+        <put-attribute name="title" value="Quản lý tuyến xe" />
         <put-attribute name="content" value="/WEB-INF/pages/admin/listRoute.jsp" />
     </definition>
     <definition name="stopPage" extends="baseLayout">
         <put-attribute name="title" value="Quản lý trạm dừng" />
         <put-attribute name="content" value="/WEB-INF/pages/admin/listStop.jsp" />
     </definition>
-    <definition name="routeStopPage" extends="baseLayout">
-        <put-attribute name="title" value="Quản lý trạm dừng" />
-        <put-attribute name="content" value="/WEB-INF/pages/admin/listRouteStop.jsp" />
-    </definition>
     <definition name="routeDetailPage" extends="baseLayout">
-        <put-attribute name="title" value="Quản lý trạm dừng" />
+        <put-attribute name="title" value="Quản lý tuyến xe" />
         <put-attribute name="content" value="/WEB-INF/pages/admin/routeDetail.jsp" />
+    </definition>
+    <definition name="userPage" extends="baseLayout">
+        <put-attribute name="title" value="Quản lý nguời dùng" />
+        <put-attribute name="content" value="/WEB-INF/pages/admin/listUser.jsp" />
     </definition>
     
 </tiles-definitions>

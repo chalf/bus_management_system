@@ -1,17 +1,16 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.busplanner.repositories.implement;
 
 import com.busplanner.busplanner.resources.CriteriaComponents;
 import com.busplanner.busplanner.resources.CriteriaUtil;
+import com.busplanner.configs.PaginationConfigs;
 import com.busplanner.pojo.Users;
 import com.busplanner.repositories.UserRepository;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -33,7 +32,6 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Admin
  */
 @Repository
-
 public class UserRepositoryImplement implements UserRepository {
 
     @Autowired
@@ -153,5 +151,50 @@ public class UserRepositoryImplement implements UserRepository {
             return false;
         }
     }
+
+    @Override
+    @Transactional
+    public List<Users> getListUser(Map<String, String> params) {
+        Session s = this.sessionFactory.getObject().getCurrentSession();
+        
+        CriteriaBuilder b = s.getCriteriaBuilder();
+        CriteriaQuery<Users> q = b.createQuery(Users.class);
+        Root<Users> userRoot = q.from(Users.class);
+        q.select(userRoot);
+        if (params != null) {
+            List<Predicate> predicates = new ArrayList<>();
+
+            String userName = params.get("q");
+            if (userName != null && !userName.isEmpty()) {
+                Predicate p1 = b.like(userRoot.get("username"), String.format("%%%s%%", userName));
+                predicates.add(p1);
+            }
+
+            String fullName = params.get("fullname");
+            if (fullName != null && !fullName.isEmpty()) {
+                Predicate p2 = b.like(userRoot.get("fullName"), String.format("%%%s%%", fullName));
+                predicates.add(p2);
+            }
+
+            q.where(predicates.toArray(Predicate[]::new));
+        }
+
+        Query<Users> query = s.createQuery(q);
+
+        if (params != null) {
+            String page = params.get("page");
+            if (page != null && !page.isEmpty()) {
+                int p = Integer.parseInt(page);
+                int start = (p - 1) * PaginationConfigs.PAGE_SIZE;
+
+                query.setFirstResult(start);
+                query.setMaxResults(PaginationConfigs.PAGE_SIZE);
+            }
+        }
+
+        return query.getResultList();
+        
+    }
+
 
 }

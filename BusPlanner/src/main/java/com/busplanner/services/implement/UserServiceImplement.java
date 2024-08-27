@@ -8,6 +8,8 @@ import com.busplanner.pojo.Users;
 import com.busplanner.repositories.UserRepository;
 import com.busplanner.services.UserService;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -18,10 +20,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- *
- * @author Admin
- */
+
 @Service("userDetailsService")
 public class UserServiceImplement implements UserService{
     @Autowired
@@ -72,6 +71,12 @@ public class UserServiceImplement implements UserService{
     @Override
     public boolean existsByEmail(String email) {
         return this.userRepository.existsByEmail(email);
+    }
+
+    @Override
+    @Transactional
+    public List<Users> getListUser(Map<String, String> params) {
+        return userRepository.getListUser(params);
     }
     
 }
