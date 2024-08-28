@@ -4,13 +4,21 @@
  */
 package com.busplanner.services.implement;
 
+import com.busplanner.dto.AddUserDto;
+import com.busplanner.dto.UpdateUserDto;
 import com.busplanner.pojo.Users;
 import com.busplanner.repositories.UserRepository;
 import com.busplanner.services.UserService;
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
+import java.io.IOException;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -27,6 +35,8 @@ public class UserServiceImplement implements UserService{
     private UserRepository userRepository;
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+    @Autowired
+    private Cloudinary cloudinary;
 
     @Override
     public Users retrieveUserByUsername(String username) {
@@ -39,9 +49,12 @@ public class UserServiceImplement implements UserService{
     }
 
     @Override
-    public Users addUser(Users user) {
+    public AddUserDto addUser(Users user) {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        return this.userRepository.addUser(user);
+        Users addedUser = this.userRepository.addUser(user);
+        return new AddUserDto(addedUser.getUserId(), addedUser.getUsername(),
+                addedUser.getEmail(), addedUser.getFullName(), addedUser.getAvatarUrl(),
+                addedUser.getCreatedAt(), addedUser.getUpdatedAt());
     }
 
     @Override
@@ -77,6 +90,47 @@ public class UserServiceImplement implements UserService{
     @Transactional
     public List<Users> getListUser(Map<String, String> params) {
         return userRepository.getListUser(params);
+    }
+
+    @Override
+    public boolean updateUser(UpdateUserDto userData) {
+        String username = userData.getUsername();
+        if(this.existsByUsername(username) == false){
+            return false;
+        }
+        boolean flag = false;
+        Users user = this.getUserByUsername(username);
+        if(userData.getPassword() != null){
+            user.setPassword(bCryptPasswordEncoder.encode(userData.getPassword()));
+            flag = true;
+        }
+        if(userData.getEmail()!= null && this.existsByEmail(userData.getEmail()) == false){
+            user.setEmail(userData.getEmail());
+            flag = true;
+        }
+        else{
+            return false;
+        }
+        if(userData.getFullName() != null){
+            user.setFullName(userData.getFullName());
+            flag = true;
+        }
+        if (userData.getFile() != null){
+            Map imageInfo;
+            try {
+                imageInfo = cloudinary.uploader().upload(userData.getFile().getBytes(), ObjectUtils.asMap("resource_type", "auto"));
+                user.setAvatarUrl((String) imageInfo.get("secure_url"));
+                flag = true;
+            } catch (IOException ex) {
+                Logger.getLogger(UserServiceImplement.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+        }
+        if(flag){ //mục đích là khi có ít nhất 1 trường dc cập nhật thì mới gán giá trị cho updatedAt
+            // Gán giá trị cho updatedAt
+            user.setUpdatedAt(new Date());
+        }
+        return this.userRepository.updateUser(user);
     }
     
 }

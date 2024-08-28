@@ -196,5 +196,18 @@ public class UserRepositoryImplement implements UserRepository {
         
     }
 
+    @Override
+    @Transactional
+    public boolean updateUser(Users updatedUser) {
+        Session s = this.sessionFactory.getObject().getCurrentSession();
+        try {
+            s.update(updatedUser);
+            return true;
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            return false;
+        }
+    }
+
 
 }

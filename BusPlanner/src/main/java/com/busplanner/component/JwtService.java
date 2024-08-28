@@ -69,6 +69,11 @@ public class JwtService {
         String username = null;
         try {
             JWTClaimsSet claims = getClaimsFromToken(token);
+            if(claims == null){
+                //vì đã ràng buộc không được tạo username bắt đầu bằng chữ số nên 
+                //tránh được việc có username là 401
+                return "401";
+            }
             username = claims.getStringClaim("username");
         } catch (ParseException e) {
             System.err.println(e.getMessage());
@@ -86,6 +91,9 @@ public class JwtService {
             return false;
         }
         String username = getUsernameFromToken(token);
+        if(username.equals("401")){
+            return false;
+        }
         
         return !(username == null || username.isEmpty() || isTokenExpired(token));
     }
