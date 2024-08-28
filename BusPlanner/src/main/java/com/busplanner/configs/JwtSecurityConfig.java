@@ -66,7 +66,7 @@ public class JwtSecurityConfig extends WebSecurityConfigurerAdapter {
         
         
         http.authorizeRequests().antMatchers("/api/login", "/api/register").permitAll();
-        http.authorizeRequests().antMatchers("/api/current-user/").authenticated();
+        http.authorizeRequests().antMatchers("/api/current-user/", "/api/user/**").authenticated();
         http.authorizeRequests().antMatchers("/api/stops/**").permitAll();
 //        http.authorizeRequests().antMatchers("/api/products/**").permitAll();
 //        http.authorizeRequests().antMatchers("/api/categories/**").permitAll();
@@ -77,6 +77,7 @@ public class JwtSecurityConfig extends WebSecurityConfigurerAdapter {
                 
                 .antMatchers(HttpMethod.GET, "/api/**").access("hasRole('ROLE_ADMIN') or hasRole('ROLE_CITIZEN')")
                 .antMatchers(HttpMethod.POST, "/api/**").access("hasRole('ROLE_ADMIN') or hasRole('ROLE_CITIZEN')")
+                .antMatchers(HttpMethod.PATCH, "/api/**").access("hasRole('ROLE_ADMIN') or hasRole('ROLE_CITIZEN')")
                 .antMatchers(HttpMethod.DELETE, "/api/**").access("hasRole('ROLE_ADMIN') or hasRole('ROLE_CITIZEN')").and()
                 .addFilterBefore(jwtAuthenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling().accessDeniedHandler(customAccessDeniedHandler());

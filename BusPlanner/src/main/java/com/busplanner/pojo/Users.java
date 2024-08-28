@@ -95,7 +95,6 @@ public class Users implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "userId")
     private Set<Trafficreports> trafficreportsSet;
     @Transient
-    @JsonIgnore
     private MultipartFile file;
 
     public Users() {

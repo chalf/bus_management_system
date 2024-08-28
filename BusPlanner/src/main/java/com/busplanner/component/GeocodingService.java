@@ -4,7 +4,7 @@
  */
 package com.busplanner.component;
 
-import com.busplanner.pojo.Coordinates;
+import com.busplanner.dto.Coordinates;
 import com.google.maps.GeoApiContext;
 import com.google.maps.GeocodingApi;
 import com.google.maps.model.GeocodingResult;

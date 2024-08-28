@@ -20,4 +20,5 @@ public interface UserRepository {
     Users getUserByUsername(String username);
     boolean existsByEmail(String email);
     List<Users> getListUser(Map<String, String> params);
+    boolean updateUser(Users user);
 }
