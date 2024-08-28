@@ -104,11 +104,11 @@ public class UserServiceImplement implements UserService{
             user.setPassword(bCryptPasswordEncoder.encode(userData.getPassword()));
             flag = true;
         }
-        if(userData.getEmail()!= null && this.existsByEmail(userData.getEmail()) == false){
+        if(userData.getEmail()!= null){
             user.setEmail(userData.getEmail());
             flag = true;
         }
-        else{
+        if(this.existsByEmail(userData.getEmail())){
             return false;
         }
         if(userData.getFullName() != null){
