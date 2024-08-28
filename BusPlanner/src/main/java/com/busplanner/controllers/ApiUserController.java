@@ -90,7 +90,7 @@ public class ApiUserController {
     }
     
     @PostMapping(path = "/user/current-user", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @ResponseStatus(value = HttpStatus.OK)
+    @ResponseStatus(value = HttpStatus.OK, reason = "Successfully")
     public void updateUser(Principal user, HttpSession session, 
             @Valid @ModelAttribute UpdateUserDto userData){
         userData.setUsername(user.getName());

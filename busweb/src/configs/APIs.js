@@ -6,6 +6,7 @@ const BASE_URL = "http://localhost:8080/BusPlanner/api/";
 export const endpoints = {
     "login": "/login",
     "current-user": "/current-user",
+    "update": "/user/current-user",
     "register": "/register",
 }
 
