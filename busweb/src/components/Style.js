@@ -77,6 +77,54 @@ const styles = {
     borderRadius: '8px',
     backgroundColor: '#fff',
   },
+  customTable: {
+    border: 'none', /* Remove borders from the table */
+  },
+  customTableRow: {
+    backgroundColor: '#f8f9fa', /* Light gray background for the first row */
+  },
+  avatarContainer: {
+    position: 'relative',
+    display: 'inline-block',
+    width: '150px',
+    height: '150px',
+  },
+  avatarImage: {
+    width: '100%',
+    height: '100%',
+    borderRadius: '50%',
+  },
+  overlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    background: 'rgba(0, 0, 0, 0.5)',
+    color: 'white',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    opacity: 0,
+    transition: 'opacity 0.3s',
+    borderRadius: '50%',
+  },
+  avatarContainerHover: {
+    '&:hover .overlay': {
+      opacity: 1,
+    },
+  },
+  button: {
+    position: 'absolute',
+    bottom: '10px',
+    right: '10px',
+    background: 'rgba(0, 0, 0, 0.7)',
+    color: 'white',
+    border: 'none',
+    borderRadius: '5px',
+    padding: '5px 10px',
+    cursor: 'pointer',
+  },
 };
 
 export default styles;

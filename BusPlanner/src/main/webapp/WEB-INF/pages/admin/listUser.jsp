@@ -35,10 +35,12 @@
                     <table class="table table-hover table-bordered mt-4">
                         <thead class="thead-dark">
                             <tr>
-                                <th>Username</th>
+                                <th>Tài khoản</th>
                                 <th>Email</th>
-                                <th>Full Name</th>
-                                <th>Role</th>
+                                <th>Họ tên</th>
+                                <th>Vai trò</th>
+                                <th>Ngày tạo</th>
+                                <th>Ngày cập nhật</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -59,6 +61,12 @@
                                             <c:when test="${user.role == 'ROLE_ADMIN'}">ADMIN</c:when>
                                             <c:otherwise>Không xác định</c:otherwise>
                                         </c:choose>
+                                    </td>
+                                    <td>
+                                        <c:out value="${user.createdAt}" escapeXml="false" />
+                                    </td>
+                                    <td>
+                                        <c:out value="${user.updatedAt}" escapeXml="false" />
                                     </td>
                                 </tr>
                             </c:forEach>

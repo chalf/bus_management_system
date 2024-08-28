@@ -9,6 +9,7 @@ const HomePage = () => {
   const [searchInput2, setSearchInput2] = useState("");
   const searchInput1Ref = useRef(null);
   const searchInput2Ref = useRef(null);
+  const [mapsLoaded, setMapsLoaded] = useState(false);
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -27,23 +28,36 @@ const HomePage = () => {
       setError("Geolocation is not supported by this browser.");
     }
 
-    // Initialize Google Maps Autocomplete
-    const initAutocomplete = () => {
+    // Check if Google Maps API is loaded
+    const checkGoogleMapsLoaded = () => {
       if (window.google && window.google.maps) {
-        const options = { types: ["geocode"] };
-        
-        new window.google.maps.places.Autocomplete(searchInput1Ref.current, options);
-        new window.google.maps.places.Autocomplete(searchInput2Ref.current, options);
+        setMapsLoaded(true);
+      } else {
+        setTimeout(checkGoogleMapsLoaded, 100); // Check again after 100ms
       }
     };
 
-    // Wait until the script is loaded
-    if (window.google) {
-      initAutocomplete();
-    } else {
-      window.initMap = initAutocomplete;
-    }
+    checkGoogleMapsLoaded();
   }, []);
+
+  useEffect(() => {
+    if (mapsLoaded) {
+      initAutocomplete();
+    }
+  }, [mapsLoaded]);
+
+  const initAutocomplete = () => {
+    if (window.google && window.google.maps) {
+      const options = { types: ["geocode"] };
+
+      new window.google.maps.places.Autocomplete(searchInput1Ref.current, options);
+      new window.google.maps.places.Autocomplete(searchInput2Ref.current, options);
+    }
+  };
+
+  const handleInputChange = (setter) => (event) => {
+    setter(event.target.value);
+  };
 
   const handleSearch = () => {
     console.log("Searching with:", searchInput1, searchInput2);
@@ -78,7 +92,7 @@ const HomePage = () => {
             type="text"
             placeholder="Nhập điểm bắt đầu"
             value={searchInput1}
-            onChange={(e) => setSearchInput1(e.target.value)}
+            onChange={handleInputChange(setSearchInput1)}
             ref={searchInput1Ref}
             style={styles.searchInput}
           />
@@ -87,11 +101,11 @@ const HomePage = () => {
             type="text"
             placeholder="Nhập điểm đến"
             value={searchInput2}
-            onChange={(e) => setSearchInput2(e.target.value)}
+            onChange={handleInputChange(setSearchInput2)}
             ref={searchInput2Ref}
             style={styles.searchInput}
           />
-          <button onClick={handleSearch} style={styles.searchButton}>
+          <button onClick={handleSearch} className="btn btn-primary">
             Tìm kiếm
           </button>
         </div>
