@@ -4,6 +4,8 @@
  */
 package com.busplanner.configs;
 
+import javax.servlet.Filter;
+import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 /**
@@ -20,6 +22,7 @@ public class DispatcherServletInitializer extends AbstractAnnotationConfigDispat
             CloudinaryConfig.class,
             SpringSecurityConfig.class,
             JwtSecurityConfig.class,
+            GoogleMapsConfig.class,
             
         };
     }
@@ -34,6 +37,17 @@ public class DispatcherServletInitializer extends AbstractAnnotationConfigDispat
     @Override
     protected String[] getServletMappings() {
         return new String[]{"/"};
+    }
+    
+    @Override
+    protected Filter[] getServletFilters(){
+        // Đăng ký CharacterEncodingFilter với mã hóa UTF-8
+        CharacterEncodingFilter characterEncodingFilter = new CharacterEncodingFilter();
+        characterEncodingFilter.setEncoding("UTF-8");
+        //Ép buộc tất cả các yêu cầu và phản hồi sử dụng mã hóa UTF-8.
+        characterEncodingFilter.setForceEncoding(true);
+
+        return new Filter[]{characterEncodingFilter}; // Trả về mảng filter
     }
 
 }

@@ -47,14 +47,7 @@
                                 <label for="address" class="form-label">Địa chỉ</label>
                                 <form:input id="address" path="address" cssClass="form-control" />
                             </div>
-                            <div class="mb-3">
-                                <label for="latitude" class="form-label">Kinh độ (Latitude)</label>
-                                <form:input id="latitude" path="latitude" cssClass="form-control" />
-                            </div>
-                            <div class="mb-3">
-                                <label for="longitude" class="form-label">Vĩ độ (Longitude)</label>
-                                <form:input id="longitude" path="longitude" cssClass="form-control" />
-                            </div>
+
                             <button type="submit" class="btn btn-primary">Thêm điểm dừng</button>
                         </form:form>
                     </div>
@@ -66,8 +59,8 @@
                                 <th>ID</th>
                                 <th>Tên điểm dừng</th>
                                 <th>Địa chỉ</th>
-                                <th>Kinh độ</th>
                                 <th>Vĩ độ</th>
+                                <th>Kinh độ</th>
                                 <th class="text-center"></th>
                             </tr>
                         </thead>

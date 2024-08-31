@@ -51,8 +51,8 @@
                         <th>Tên điểm dừng</th>
                         <th>Hướng</th>
                         <th>Địa chỉ</th>
-                        <th>Kinh độ</th>
                         <th>Vĩ độ</th>
+                        <th>Kinh độ</th>
                     </tr>
                 </thead>
                 <tbody>

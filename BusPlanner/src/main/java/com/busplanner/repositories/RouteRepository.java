@@ -14,4 +14,5 @@ public interface RouteRepository {
     void addOrUpdateRoute(Routes route);
     Routes getRouteById(int id);
     void deleteRouteById(int id);
+    List<Routes> findByStopId(int stopId);
 }

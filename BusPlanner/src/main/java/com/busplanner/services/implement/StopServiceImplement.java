@@ -5,11 +5,17 @@
 package com.busplanner.services.implement;
 
 import com.busplanner.busplanner.resources.Utils;
+import com.busplanner.component.GeocodingService;
 import com.busplanner.pojo.Stops;
 import com.busplanner.repositories.StopRepository;
 import com.busplanner.services.StopService;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +29,8 @@ public class StopServiceImplement implements StopService {
 
     @Autowired
     private StopRepository stopRepository;
+    @Autowired
+    private GeocodingService geo;
 
     @Override
     @Transactional
@@ -32,8 +40,15 @@ public class StopServiceImplement implements StopService {
 
     @Override
     @Transactional
-    public void addorUpdateStop(Stops stop) {
-        stopRepository.addOrUpdateStop(stop);
+    public void addorUpdateStop(Stops stop){
+        try {
+            Map<String, String> coordinate = geo.geocoding(stop.getAddress());
+            stop.setLatitude(new BigDecimal(coordinate.get("latitude")));
+            stop.setLongitude(new BigDecimal(coordinate.get("longitude")));
+            stopRepository.addOrUpdateStop(stop);
+        } catch (IOException ex) {
+            Logger.getLogger(StopServiceImplement.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Override
