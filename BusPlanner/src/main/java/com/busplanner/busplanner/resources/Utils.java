@@ -4,6 +4,9 @@
  */
 package com.busplanner.busplanner.resources;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
+
 /**
  *
  * @author Admin
@@ -26,6 +29,6 @@ public class Utils {
         // tính toán khoảng cách
         return earthRadius * c; // convert to kilometers
     }
-
+    
 
 }

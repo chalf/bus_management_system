@@ -4,8 +4,12 @@
  */
 package com.busplanner.repositories.implement;
 
+import com.busplanner.busplanner.resources.CriteriaComponents;
+import com.busplanner.busplanner.resources.CriteriaUtil;
 import com.busplanner.configs.PaginationConfigs;
 import com.busplanner.pojo.Routes;
+import com.busplanner.pojo.Routestops;
+import com.busplanner.pojo.Stops;
 import com.busplanner.repositories.RouteRepository;
 import java.util.ArrayList;
 import java.util.Date;
@@ -13,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import org.hibernate.Session;
@@ -108,5 +113,22 @@ public class RouteRepositoryImplement implements RouteRepository {
             s.delete(route);
         }
 
+    }
+
+    @Override
+    @Transactional
+    public List<Routes> findByStopId(int stopId) {
+        Session session = this.sessionFactory.getObject().getCurrentSession();
+        CriteriaComponents criteriaComponents = CriteriaUtil.createCriteriaComponents(session, Routes.class);
+        CriteriaBuilder criteria = criteriaComponents.getCriteriaBuilder();
+        CriteriaQuery<Routes> query = criteriaComponents.getCriteriaQuery();
+        Root<Routes> routeRoot = criteriaComponents.getRoot();
+        
+        Join<Routes, Routestops> joinRoutestops = routeRoot.join("routestopsSet");
+        Join<Routestops, Stops> joinStops = joinRoutestops.join("stopId");
+        
+        query.select(routeRoot)
+                .where(criteria.equal(joinStops.get("stopId"), stopId));
+        return session.createQuery(query).getResultList();
     }
 }

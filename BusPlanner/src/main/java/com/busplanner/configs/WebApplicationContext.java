@@ -34,6 +34,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.filter.CharacterEncodingFilter;
 
 /**
  *
@@ -92,10 +94,6 @@ public class WebApplicationContext implements WebMvcConfigurer {
         return validator();
     }
 
-//    @Bean(name = "beanValidator")
-//    public javax.validation.Validator beanValidator() {
-//        return validator(); // LocalValidatorFactoryBean là cháu chắt của javax.validation.Validator
-//    }
     // for uploading file
     @Bean
     public CommonsMultipartResolver multipartResolver() {
@@ -129,5 +127,16 @@ public class WebApplicationContext implements WebMvcConfigurer {
         registry.addResourceHandler("/images/**").addResourceLocations("/resources/images/");
         
     }
+    
+    /* Nó cung cấp một API đơn giản để tương tác với các dịch vụ web RESTful,
+        giúp việc gửi và nhận dữ liệu qua HTTP trở nên dễ dàng hơn
+        - gửi các yêu cầu HTTP như GET, POST, PUT, DELETE đến các server khác.
+        - xử lý các phản hồi từ server, bao gồm việc chuyển đổi dữ liệu JSON/XML 
+                thành các đối tượng Java (deserialize) */
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
+    
 
 }
