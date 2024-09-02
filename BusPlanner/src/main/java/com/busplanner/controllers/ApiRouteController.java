@@ -4,17 +4,16 @@
  */
 package com.busplanner.controllers;
 
-import com.busplanner.component.DistanceMatrixService;
+import com.busplanner.component.GeocodingService;
 import com.busplanner.dto.RouteSuggestion;
 import com.busplanner.pojo.Routes;
 import com.busplanner.pojo.Stops;
 import com.busplanner.services.RouteService;
 import com.busplanner.services.StopService;
-import com.google.maps.DirectionsApi;
-import com.google.maps.GeoApiContext;
-import com.google.maps.model.DirectionsResult;
-import com.google.maps.model.TravelMode;
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +31,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class ApiRouteController {
 
     @Autowired
-    private GeoApiContext geoApiContext;
+    private GeocodingService geocoding;
 
     @Autowired
     private StopService stopService;
@@ -40,27 +39,66 @@ public class ApiRouteController {
     @Autowired
     private RouteService routeService;
 
+//    @GetMapping("/find")
+//    public ResponseEntity<?> findRoute(@RequestParam(value = "startLat") String startLat,
+//            @RequestParam(value = "startLon") String startLon,
+//            @RequestParam(value = "endLat") String endLat,
+//            @RequestParam(value = "endLon") String endLon) throws IOException, ParseException {
+//        // Lấy tọa độ của điểm đi và điểm đến mà người dùng nhập
+////        Map<String, String> startCoordinate = geocoding.geocoding(startPoint);
+////        Map<String, String> endCoordinate = geocoding.geocoding(endPoint);
+//        // Tìm điểm dừng gần nhất cho điểm đi và điểm đến
+//        
+//        Stops nearestStartStop = stopService.findNearestStop(Double.parseDouble(startLat), Double.parseDouble(startLon));
+//        
+//        Stops nearestEndStop = stopService.findNearestStop(Double.parseDouble(endLat), Double.parseDouble(endLon));
+//       
+//        // Tìm tuyến đường từ điểm đi tới điểm đến
+//        List<RouteSuggestion> routeSuggestions = routeService.findRoutes(
+//                startLat + ", " + startLon,
+//                endLat + ", " + endLon,
+//                nearestStartStop, nearestEndStop);
+//        
+//        
+//        
+//        // Gọi Google Maps API để tính toán khoảng cách và thời gian
+//        routeSuggestions = routeService.calculateRouteDetails(routeSuggestions);
+//
+//        return ResponseEntity.ok(routeSuggestions);
+//    }
+    
+    
     @GetMapping("/find")
-    public ResponseEntity<?> findRoute(
-            @RequestParam double startLat, @RequestParam double startLng,
-            @RequestParam double endLat, @RequestParam double endLng) {
-
+    public ResponseEntity<?> findRoute(@RequestParam(value = "origin") String origin,
+            @RequestParam(value = "destination") String dest) throws IOException, ParseException {
+        // Lấy tọa độ của điểm đi và điểm đến mà người dùng nhập
+        Map<String, String> startCoordinate = geocoding.geocoding(origin);
+        Map<String, String> endCoordinate = geocoding.geocoding(dest);
+        
+        // validate địa chỉ mà người dùng nhập, nếu GoogleMap không tìm thấy tọa độ => địa chỉ không hợp lệ
+        if(startCoordinate.isEmpty()){
+            return new ResponseEntity<>("Không tìm thấy địa chỉ: `"+ origin + "`", HttpStatus.BAD_REQUEST);
+        }
+        if(endCoordinate.isEmpty()){
+            return new ResponseEntity<>("Không tìm thấy địa chỉ: `"+ dest + "`", HttpStatus.BAD_REQUEST);
+        }
+        
         // Tìm điểm dừng gần nhất cho điểm đi và điểm đến
-        Stops nearestStartStop = stopService.findNearestStop(startLat, startLng);
-        Stops nearestEndStop = stopService.findNearestStop(endLat, endLng);
-
+        Stops nearestStartStop = stopService.findNearestStop(Double.parseDouble(startCoordinate.get("latitude")), Double.parseDouble(startCoordinate.get("longitude")));
+        Stops nearestEndStop = stopService.findNearestStop(Double.parseDouble(endCoordinate.get("latitude")), Double.parseDouble(endCoordinate.get("longitude")));
+       
         // Tìm tuyến đường từ điểm đi tới điểm đến
-        List<RouteSuggestion> routeSuggestions = routeService.findRoutes(nearestStartStop, nearestEndStop);
-
+        List<RouteSuggestion> routeSuggestions = routeService.findRoutes(
+                origin,
+                dest,
+                nearestStartStop, nearestEndStop);
+        
+        
+        
         // Gọi Google Maps API để tính toán khoảng cách và thời gian
         routeSuggestions = routeService.calculateRouteDetails(routeSuggestions);
 
         return ResponseEntity.ok(routeSuggestions);
     }
-    
-    
-    
-    
-    
 
 }
