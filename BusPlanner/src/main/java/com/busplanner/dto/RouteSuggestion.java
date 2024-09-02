@@ -6,6 +6,7 @@ package com.busplanner.dto;
 
 import com.busplanner.pojo.Routes;
 import com.busplanner.pojo.Stops;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,19 +18,22 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@JsonIgnoreProperties({"walkingDistanceToStartStop", "walkingTimeToStartStop",
+    "busDistance", "busTime", "walkingDistanceToEndPoint", "walkingTimeToEndPoint"
+})
 public class RouteSuggestion {
     // Điểm đi và điểm đến mà người dùng nhập
     private String startPoint;
     private String endPoint;
 
     // Điểm dừng gần nhất với điểm đi và điểm đến
-    private Stops startStop;
-    private Stops endStop;
+    private StopDto startStop;
+    private StopDto endStop;
 
     // Tuyến trực tiếp hoặc tuyến bắt đầu trong trường hợp chuyển tiếp
-    private Routes startRoute;
+    private RouteDto startRoute;
     // Tuyến chuyển tiếp (nếu có)
-    private Routes transferRoute;
+    private RouteDto transferRoute;
 
     // Khoảng cách và thời gian đi bộ từ điểm đi tới điểm dừng gần nhất
     private double walkingDistanceToStartStop;
@@ -42,9 +46,15 @@ public class RouteSuggestion {
     // Khoảng cách và thời gian đi bộ từ điểm dừng cuối tới điểm đến
     private double walkingDistanceToEndPoint;
     private double walkingTimeToEndPoint;
+    
+    private double distanceTotal;
+    private double durationTotal;
 
     // Constructor
-    public RouteSuggestion(Routes startRoute, Stops startStop, Stops endStop, Routes transferRoute) {
+    public RouteSuggestion(String startPoint, String endPoint, 
+            RouteDto startRoute, StopDto startStop, StopDto endStop, RouteDto transferRoute) {
+        this.startPoint = startPoint;
+        this.endPoint = endPoint;
         this.startRoute = startRoute;
         this.startStop = startStop;
         this.endStop = endStop;

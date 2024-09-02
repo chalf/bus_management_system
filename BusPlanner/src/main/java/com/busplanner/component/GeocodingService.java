@@ -24,7 +24,7 @@ import java.util.Map;
 public class GeocodingService {
 
     OkHttpClient client = new OkHttpClient();
-
+    //trả về Map có 2 key: latitude, longitude
     public Map<String, String> geocoding(String address) throws IOException {
         if (address == null || address.trim().isEmpty()) {
             throw new IllegalArgumentException("Địa chỉ không hợp lệ");
@@ -46,7 +46,7 @@ public class GeocodingService {
     }
 
     ObjectMapper objectMapper = new ObjectMapper(); // Tạo ObjectMapper để xử lý JSON
-
+    //từ json mà GoogleMap trả về phân tách ra lấy 2 giá trị lat và long 
     private Map<String, String> extractLatLongFromJsonGoogle(String json) throws IOException {
         Map<String, String> coordinates = new HashMap<>();
 

@@ -4,6 +4,7 @@
  */
 package com.busplanner.pojo;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
@@ -189,7 +190,7 @@ public class Routes implements Serializable {
     public String toString() {
         return "com.busplanner.pojo.Routes[ routeId=" + routeId + " ]";
     }
-
+    
     public String getRouteName() {
         return routeName;
     }

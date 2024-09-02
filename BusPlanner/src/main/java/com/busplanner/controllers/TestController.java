@@ -7,6 +7,7 @@ package com.busplanner.controllers;
 import com.busplanner.component.DistanceMatrixService;
 import com.busplanner.component.GeocodingService;
 import java.io.IOException;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,23 +23,29 @@ import org.springframework.web.bind.annotation.RequestParam;
  */
 @Controller
 public class TestController {
+
     @Autowired
     private GeocodingService geo;
-    @RequestMapping("/test/geocoding")
-    public String geocode(Model model, @RequestParam(value = "address") String address) throws IOException{
-        model.addAttribute("geo", geo.geocoding(address));
+
+//    @RequestMapping("/test/geocoding")
+    public String geocode(Model model, @RequestParam(value = "address") String address) throws IOException {
+        Map<String, String> coor = geo.geocoding(address);
+        if (coor.isEmpty()) {
+            model.addAttribute("geo", "Không tìm thấy địa chỉ: `"+ address + "`"); 
+        }else
+            model.addAttribute("geo", geo.geocoding(address));
         return "test";
     }
     // TEST distance matrix api
     @Autowired
     private DistanceMatrixService distance;
 
-    @GetMapping("/test/distance")
+//    @GetMapping("/test/distance")
     public ResponseEntity<?> distance(@RequestParam("picking_up") String source, @RequestParam("dropping_off") String destination) {
         String response = "";
         try {
             //method of DistanceTime Class
-            response = distance.calculate(source, destination);
+            response = distance.sendRequest(source, destination, "walking");
 
         } catch (Exception e) {
             System.out.println("Exception Occurred");

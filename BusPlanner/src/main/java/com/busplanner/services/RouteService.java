@@ -5,10 +5,14 @@
 package com.busplanner.services;
 
 import com.busplanner.dto.RouteSuggestion;
+import com.busplanner.dto.StopDto;
 import com.busplanner.pojo.Routes;
 import com.busplanner.pojo.Stops;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import org.json.simple.parser.ParseException;
+
 
 
 public interface RouteService {
@@ -16,6 +20,6 @@ public interface RouteService {
     void addOrUpdateRoute(Routes route);
     Routes getRouteById(int id);
     void deleteRouteById(int id);
-    List<RouteSuggestion> findRoutes(Stops startStop, Stops endStop);
-    List<RouteSuggestion> calculateRouteDetails(List<RouteSuggestion> routeSuggestions);
+    List<RouteSuggestion> findRoutes(String startPoint, String endPoint, Stops startStop, Stops endStop);
+    List<RouteSuggestion> calculateRouteDetails(List<RouteSuggestion> routeSuggestions) throws IOException, ParseException;
 }

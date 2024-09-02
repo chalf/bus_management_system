@@ -4,7 +4,10 @@
  */
 package com.busplanner.services.implement;
 
+import com.busplanner.component.DistanceMatrixService;
+import com.busplanner.dto.RouteDto;
 import com.busplanner.dto.RouteSuggestion;
+import com.busplanner.dto.StopDto;
 import com.busplanner.pojo.Routes;
 import com.busplanner.pojo.Routestops;
 import com.busplanner.pojo.Stops;
@@ -12,10 +15,12 @@ import com.busplanner.repositories.RouteRepository;
 import com.busplanner.repositories.RouteStopRepository;
 import com.busplanner.repositories.StopRepository;
 import com.busplanner.services.RouteService;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,7 +59,8 @@ public class RouteServiceImplement implements RouteService {
     }
 
     @Override
-    public List<RouteSuggestion> findRoutes(Stops nearestStartStop, Stops nearestEndStop) {
+    public List<RouteSuggestion> findRoutes(String startPoint, String endPoint,
+            Stops nearestStartStop, Stops nearestEndStop) {
         List<RouteSuggestion> routeSuggestions = new ArrayList<>();
         // Kiểm tra nếu điểm dừng tồn tại
         if (nearestStartStop == null || nearestEndStop == null) {
@@ -69,7 +75,12 @@ public class RouteServiceImplement implements RouteService {
         // 3. Tìm tuyến trực tiếp (nếu có)
         for (Routes startRoute : startRoutes) {
             if (endRoutes.contains(startRoute)) {
-                routeSuggestions.add(new RouteSuggestion(startRoute, nearestStartStop, nearestEndStop, null));
+                StopDto nearestStartStopDto = new StopDto(nearestStartStop.getStopId(), nearestStartStop.getStopName(), nearestStartStop.getLatitude(), nearestStartStop.getLongitude(), nearestStartStop.getAddress());
+                StopDto nearestEndStopDto = new StopDto(nearestEndStop.getStopId(), nearestEndStop.getStopName(), nearestEndStop.getLatitude(), nearestEndStop.getLongitude(), nearestEndStop.getAddress());
+                RouteDto startRouteDto = new RouteDto(startRoute.getRouteId(), startRoute.getRouteName(), startRoute.getStartPoint(), startRoute.getEndPoint(), startRoute.getDirection());
+                
+                routeSuggestions.add(new RouteSuggestion(startPoint, endPoint, startRouteDto,
+                        nearestStartStopDto, nearestEndStopDto, null));
             }
         }
 
@@ -88,7 +99,12 @@ public class RouteServiceImplement implements RouteService {
                     List<Routes> transferRoutes = routeRepository.findByStopId(stop.getStopId());
                     for (Routes transferRoute : transferRoutes) {
                         if (endRoutes.contains(transferRoute)) {
-                            routeSuggestions.add(new RouteSuggestion(startRoute, nearestStartStop, stop, transferRoute));
+                            StopDto nearestStartStopDto = new StopDto(nearestStartStop.getStopId(), nearestStartStop.getStopName(), nearestStartStop.getLatitude(), nearestStartStop.getLongitude(), nearestStartStop.getAddress());
+                            
+                            StopDto stopDto = new StopDto(stop.getStopId(), stop.getStopName(), stop.getLatitude(), stop.getLongitude(), stop.getAddress());
+                            RouteDto startRouteDto = new RouteDto(startRoute.getRouteId(), startRoute.getRouteName(), startRoute.getStartPoint(), startRoute.getEndPoint(), startRoute.getDirection());
+                            RouteDto transferRouteDto = new RouteDto(transferRoute.getRouteId(), transferRoute.getRouteName(), transferRoute.getStartPoint(), transferRoute.getEndPoint(), transferRoute.getDirection());
+                            routeSuggestions.add(new RouteSuggestion(startPoint, endPoint, startRouteDto, nearestStartStopDto, stopDto, transferRouteDto));
                         }
                     }
                 }
@@ -98,30 +114,42 @@ public class RouteServiceImplement implements RouteService {
         return routeSuggestions;
     }
 
+    @Autowired
+    private DistanceMatrixService distanceCalculator;
+
     @Override
-    public List<RouteSuggestion> calculateRouteDetails(List<RouteSuggestion> routeSuggestions) {
-//        for (RouteSuggestion suggestion : routeSuggestions) {
-//            // 1. Tính khoảng cách và thời gian đi bộ từ điểm đi tới điểm dừng gần nhất
-//            double walkingDistanceToStartStop = calculateWalkingDistance(suggestion.getStartPoint(), suggestion.getStartStop());
-//            double walkingTimeToStartStop = calculateWalkingTime(suggestion.getStartPoint(), suggestion.getStartStop());
-//
-//            suggestion.setWalkingDistanceToStartStop(walkingDistanceToStartStop);
-//            suggestion.setWalkingTimeToStartStop(walkingTimeToStartStop);
-//
-//            // 2. Tính khoảng cách và thời gian đi xe buýt giữa các điểm dừng
-//            double busDistance = calculateBusDistance(suggestion);
-//            double busTime = calculateBusTime(suggestion);
-//
-//            suggestion.setBusDistance(busDistance);
-//            suggestion.setBusTime(busTime);
-//
-//            // 3. Tính khoảng cách và thời gian đi bộ từ điểm dừng cuối tới điểm đến
-//            double walkingDistanceToEndPoint = calculateWalkingDistance(suggestion.getEndStop(), suggestion.getEndPoint());
-//            double walkingTimeToEndPoint = calculateWalkingTime(suggestion.getEndStop(), suggestion.getEndPoint());
-//
-//            suggestion.setWalkingDistanceToEndPoint(walkingDistanceToEndPoint);
-//            suggestion.setWalkingTimeToEndPoint(walkingTimeToEndPoint);
-//        }
+    public List<RouteSuggestion> calculateRouteDetails(List<RouteSuggestion> routeSuggestions) throws IOException, ParseException {
+        for (RouteSuggestion suggestion : routeSuggestions) {
+            // 1. Tính khoảng cách và thời gian đi bộ từ điểm đi tới điểm dừng gần nhất
+            DistanceMatrixService.DistanceTimeResult walkingToStartStop
+                    = distanceCalculator.calculateWalkingDetails(suggestion.getStartPoint(), suggestion.getStartStop().getLatitude() + ", " + suggestion.getStartStop().getLongitude());
+
+            suggestion.setWalkingDistanceToStartStop(walkingToStartStop.distance);
+            suggestion.setWalkingTimeToStartStop(walkingToStartStop.duration);
+
+            // 2. Tính khoảng cách và thời gian đi xe buýt giữa các điểm dừng
+            DistanceMatrixService.DistanceTimeResult busDetails
+                    = distanceCalculator.calculateTransitDetails(suggestion.getStartStop().getLatitude() + ", " + suggestion.getStartStop().getLongitude(), suggestion.getEndStop().getLatitude() + ", " + suggestion.getEndStop().getLongitude());
+
+            suggestion.setBusDistance(busDetails.distance);
+            suggestion.setBusTime(busDetails.duration);
+
+            // 3. Tính khoảng cách và thời gian đi bộ từ điểm dừng cuối tới điểm đến
+            DistanceMatrixService.DistanceTimeResult walkingToEndPoint
+                    = distanceCalculator.calculateWalkingDetails(suggestion.getEndStop().getLatitude() + ", " + suggestion.getEndStop().getLongitude(), suggestion.getEndPoint());
+
+            suggestion.setWalkingDistanceToEndPoint(walkingToEndPoint.distance);
+            suggestion.setWalkingTimeToEndPoint(walkingToEndPoint.duration);
+
+            suggestion.setDistanceTotal(suggestion.getWalkingDistanceToStartStop()
+                    + suggestion.getBusDistance()
+                    + suggestion.getWalkingDistanceToEndPoint()
+            );
+            suggestion.setDurationTotal(suggestion.getWalkingTimeToStartStop()
+                    + suggestion.getBusTime()
+                    + suggestion.getWalkingTimeToEndPoint()
+            );
+        }
         return routeSuggestions;
     }
 
