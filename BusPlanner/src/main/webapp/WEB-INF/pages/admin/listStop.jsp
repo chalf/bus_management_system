@@ -22,7 +22,7 @@
     <body>   
         <div class="container mt-5">
             <div class="row justify-content-center">
-                <div class="col-10">
+                <div class="col-15">
                     <h1 class="text-center mb-4">Danh sách các điểm dừng</h1>
 
                     <!-- Search Form -->

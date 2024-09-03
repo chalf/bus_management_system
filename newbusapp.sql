@@ -29,7 +29,7 @@ CREATE TABLE `buses` (
   PRIMARY KEY (`bus_id`),
   KEY `route_id` (`route_id`),
   CONSTRAINT `buses_ibfk_1` FOREIGN KEY (`route_id`) REFERENCES `routes` (`route_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -38,7 +38,7 @@ CREATE TABLE `buses` (
 
 LOCK TABLES `buses` WRITE;
 /*!40000 ALTER TABLE `buses` DISABLE KEYS */;
-INSERT INTO `buses` VALUES (1,'123',1),(2,'112',3),(3,'115',2);
+INSERT INTO `buses` VALUES (1,'123',1),(2,'112',3),(3,'115',2),(6,'999',8),(7,'998',9);
 /*!40000 ALTER TABLE `buses` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -79,15 +79,15 @@ DROP TABLE IF EXISTS `routes`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `routes` (
   `route_id` int NOT NULL AUTO_INCREMENT,
-  `route_name` varchar(100) NOT NULL,
-  `direction` enum('outbound','inbound') NOT NULL,
-  `start_point` varchar(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
-  `end_point` varchar(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
-  `description` text,
+  `route_name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `direction` enum('outbound','inbound') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `start_point` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `end_point` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` text COLLATE utf8mb4_unicode_ci,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`route_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -96,7 +96,7 @@ CREATE TABLE `routes` (
 
 LOCK TABLES `routes` WRITE;
 /*!40000 ALTER TABLE `routes` DISABLE KEYS */;
-INSERT INTO `routes` VALUES (1,'Phan Huy Thực - Nguyễn Hữu Thọ','outbound','Phan Huy Thực','Nguyễn Hữu Thọ',NULL,'2024-08-26 02:51:09','2024-08-26 09:43:52'),(2,'cong quynh','inbound','36 cong quynh','55 nguyen trai',NULL,'2024-08-26 04:00:23','2024-08-26 04:00:23'),(3,'Cho Ben Thanh - Quan 8','outbound','Cho Ben Thanh','Quan 8',NULL,NULL,NULL),(4,'lÃª vÄng lÆ°Æ¡ng','inbound','Cho Ben Thanh','pha huy thuc',NULL,NULL,NULL);
+INSERT INTO `routes` VALUES (1,'Phan Húy Thực - Nguyễn Hữu Thọ','inbound','Phan Huy Thực','Nguyễn Hữu Thọ',NULL,'2024-09-03 01:11:21','2024-09-03 01:11:21'),(2,'cong quynh','inbound','36 cong quynh','55 nguyen trai',NULL,'2024-08-26 04:00:23','2024-08-26 04:00:23'),(3,'Cho Ben Thanh - Quan 8','outbound','Cho Ben Thanh','Quận 8',NULL,'2024-08-26 04:00:23','2024-08-27 02:34:29'),(8,'Nguyễn Thái Học - Nguyễn Thị Minh Khai','outbound','Nguyễn Thái Học','Nguyễn Thị Minh Khai',NULL,'2024-09-03 02:23:29','2024-09-03 02:23:29'),(9,'Nguyễn Thị Nghĩa - Điện Biên Phủ','outbound','Nguyễn Thị Nghĩa','Điện Biên Phủ',NULL,'2024-09-03 02:39:55','2024-09-03 02:39:55');
 /*!40000 ALTER TABLE `routes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -118,7 +118,7 @@ CREATE TABLE `routestops` (
   KEY `stop_id` (`stop_id`),
   CONSTRAINT `routestops_ibfk_1` FOREIGN KEY (`route_id`) REFERENCES `routes` (`route_id`),
   CONSTRAINT `routestops_ibfk_2` FOREIGN KEY (`stop_id`) REFERENCES `stops` (`stop_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -127,7 +127,7 @@ CREATE TABLE `routestops` (
 
 LOCK TABLES `routestops` WRITE;
 /*!40000 ALTER TABLE `routestops` DISABLE KEYS */;
-INSERT INTO `routestops` VALUES (1,1,1,'inbound',1),(2,1,2,'inbound',2),(4,1,5,'outbound',3),(5,3,2,'outbound',1);
+INSERT INTO `routestops` VALUES (1,1,1,'inbound',1),(2,1,2,'inbound',2),(4,1,5,'outbound',3),(5,3,2,'outbound',1),(6,8,18,'outbound',1),(7,8,17,'outbound',2),(8,8,11,'outbound',3),(9,8,12,'outbound',4),(10,8,13,'outbound',5),(11,9,17,'outbound',1),(12,9,23,'outbound',2),(13,9,20,'outbound',3),(14,9,21,'outbound',4),(15,9,22,'outbound',5);
 /*!40000 ALTER TABLE `routestops` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -179,7 +179,7 @@ CREATE TABLE `stops` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`stop_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -188,7 +188,7 @@ CREATE TABLE `stops` (
 
 LOCK TABLES `stops` WRITE;
 /*!40000 ALTER TABLE `stops` DISABLE KEYS */;
-INSERT INTO `stops` VALUES (1,'Phan Huy Thực',10.74761520,106.70661890,'104 Phan Huy Thực, P, Quận 7, Hồ Chí Minh 72913, Việt Nam','2024-08-26 07:39:06','2024-08-26 07:39:35'),(2,'Lê Văn Lương',10.74685590,106.70458980,'219 Đ. Lê Văn Lương, Tân Kiểng, Quận 7, Hồ Chí Minh, Việt Nam','2024-08-26 07:41:05','2024-08-26 07:41:05'),(5,'Nguyễn Hữu Thọ',10.73981700,106.70092000,'358 Đ. Nguyễn Hữu Thọ, Tân Hưng, Quận 7, Hồ Chí Minh, Việt Nam','2024-08-26 09:04:35','2024-08-26 09:04:35');
+INSERT INTO `stops` VALUES (1,'Phan Huy Thực',10.74760140,106.70912330,'38 Phan Huy Thực, P, Quận 7, Hồ Chí Minh 72913, Việt Nam','2024-09-03 01:32:49','2024-09-03 01:32:49'),(2,'Lê Văn Lương 2',10.74685590,106.70458980,'219 Đ. Lê Văn Lương, Tân Kiểng, Quận 7, Hồ Chí Minh, Việt Nam','2024-08-26 07:41:05','2024-09-03 01:55:24'),(5,'Nguyễn Hữu Thọ',10.73981700,106.70092000,'358 Đ. Nguyễn Hữu Thọ, Tân Hưng, Quận 7, Hồ Chí Minh, Việt Nam','2024-08-26 09:04:35','2024-08-26 09:04:35'),(7,'Lê Văn Lương 1',10.74871100,106.70486900,'80 Đ. Lê Văn Lương, Tân Kiểng, Quận 7, Hồ Chí Minh, Việt Nam','2024-09-03 01:55:24','2024-09-03 01:55:24'),(8,'Trần Xuân Soạn 1',10.75177600,106.69810400,'188 Đ. Trần Xuân Soạn, Tân Hưng, Quận 7, Hồ Chí Minh, Việt Nam','2024-09-03 01:55:24','2024-09-03 01:55:24'),(9,'Lê Văn Lương 3',10.74104400,106.70376800,'355 Đ. Lê Văn Lương, Tân Kiểng, Quận 7, Hồ Chí Minh, Việt Nam','2024-09-03 01:55:24','2024-09-03 01:55:24'),(10,'Nguyễn Thị Thập 1',10.73966500,106.70469700,'579 Đ. Nguyễn Thị Thập, Tân Phong, Quận 7, Hồ Chí Minh, Việt Nam','2024-09-03 01:55:24','2024-09-03 01:55:24'),(11,'CMT8 1',10.77222100,106.69183300,'14 Đ. Cách Mạng Tháng 8, Phường Phạm Ngũ Lão, Quận 1, Hồ Chí Minh, Việt Nam','2024-09-03 01:55:24','2024-09-03 01:55:24'),(12,'CMT8 2',10.77457100,106.68756300,'173 Đ. Cách Mạng Tháng 8, Phường 5, Quận 3, Hồ Chí Minh, Việt Nam','2024-09-03 01:55:24','2024-09-03 01:55:24'),(13,'Nguyễn Thị Minh Khai 1',10.77420600,106.68998100,'235 Đ. Nguyễn Thị Minh Khai, Phường Bến Thành, Quận 1, Hồ Chí Minh, Việt Nam','2024-09-03 01:55:24','2024-09-03 01:55:24'),(14,'Nguyễn Thị Minh Khai 2',10.77576100,106.69143100,'208 Đ. Nguyễn Thị Minh Khai, Phường Bến Thành, Quận 1, Hồ Chí Minh, Việt Nam','2024-09-03 01:55:24','2024-09-03 01:55:24'),(15,'Trương Định 1',10.77685300,106.69078000,'35 Trương Định, Phường 6, Quận 3, Hồ Chí Minh, Việt Nam','2024-09-03 01:55:24','2024-09-03 01:55:24'),(16,'Võ Văn Tần',10.77662900,106.69038900,'60 Võ Văn Tần, Phường 6, Quận 3, Hồ Chí Minh, Việt Nam','2024-09-03 01:55:24','2024-09-03 01:55:24'),(17,'Nguyễn Thị Nghĩa',10.77068400,106.69393200,'19 Đ. Nguyễn Thị Nghĩa, Phường Bến Thành, Quận 1, Hồ Chí Minh, Việt Nam','2024-09-03 01:55:24','2024-09-03 01:55:24'),(18,'Nguyễn Thái Học',10.76759100,106.69572500,'120 Nguyễn Thái Học, Phường Cầu Ông Lãnh, Quận 1, Hồ Chí Minh, Việt Nam','2024-09-03 01:55:24','2024-09-03 01:55:24'),(19,'Trần Hưng Đạo 1',10.76650100,106.69391200,'62 Đ. Trần Hưng Đạo, Phường Phạm Ngũ Lão, Quận 1, Hồ Chí Minh, Việt Nam','2024-09-03 01:55:24','2024-09-03 01:55:24'),(20,'Lý Thái Tổ 1',10.76587200,106.68053900,'50 Đ. Lý Thái Tổ, Phường 2, Quận 3, Hồ Chí Minh, Việt Nam','2024-09-03 02:35:34','2024-09-03 02:35:34'),(21,'Lý Thái Tổ 2',10.76728300,106.67583000,'299 Đ. Lý Thái Tổ, Phường 2, Quận 3, Hồ Chí Minh, Việt Nam','2024-09-03 02:38:02','2024-09-03 02:38:02'),(22,'Điện Biên Phủ 1',10.76840500,106.67495000,'665 Đ. Điện Biên Phủ, Phường 1, Quận 3, Hồ Chí Minh, Việt Nam','2024-09-03 02:38:02','2024-09-03 02:38:02'),(23,'Nguyễn Thị Minh Khai 3',10.76784300,106.68387400,'460 Đ. Nguyễn Thị Minh Khai, Phường 2, Quận 3, Hồ Chí Minh, Việt Nam','2024-09-03 02:39:03','2024-09-03 02:39:03');
 /*!40000 ALTER TABLE `stops` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -243,7 +243,7 @@ CREATE TABLE `users` (
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `email_UNIQUE` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -252,7 +252,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (5,'hieu','$2a$10$DcjPJIdYl9Er1LFkmDwM/OuQDNMyryB.S97KanI7FGZQX6SOovGKu','hieu@gmail.com','Duong Hieu','https://res.cloudinary.com/dsfdkyanf/image/upload/v1724040995/bnsygaltrlurcrvhxmso.jpg','ROLE_CITIZEN','2024-08-19 04:16:36','2024-08-24 13:54:48'),(6,'test','$2a$10$r20lXo5VpNOIC640329L9.VGfCrWy8fnCZvJgyYyYa12x33Qfjkmi','test@gmail.com','dddddd','https://res.cloudinary.com/dsfdkyanf/image/upload/v1724041225/ppnzy0o2dajxxtzt4dju.jpg','ROLE_CITIZEN','2024-08-19 04:20:26','2024-08-24 13:54:48'),(15,'test00','$2a$10$gVzMqHWmOYS.5pX0l1bXzOZJrQV66X9HiWFoFS5gtFw7Is9ynlyKC','tt44@gmail.com','Hiếu','https://res.cloudinary.com/dsfdkyanf/image/upload/v1724077513/wuzmacetkufufatnmtym.jpg','ROLE_CITIZEN','2024-08-19 14:25:16','2024-08-24 13:54:48'),(26,'admin','$2a$10$hOoe2YqviKEso4CEWAZmpuwT5woHgXHZmqU9AnlB7smkDDxky3rly','admin@busplanner.com','Duong Hieu','https://res.cloudinary.com/dsfdkyanf/image/upload/v1724388467/nxvpkvhr04zzkn3exsl6.jpg','ROLE_ADMIN','2024-08-23 04:47:48','2024-08-24 13:55:22'),(27,'thuan','$2a$10$Thhj02wbvV9L6IZL3fbQse6dX9JLRx8T2dXXDCanqn4NXPWyniNi.','thuan@gmail.com','phan thuan','https://res.cloudinary.com/dsfdkyanf/image/upload/v1724556952/tjadip0srvudzflvivlz.png','ROLE_CITIZEN','2024-08-25 03:35:52','2024-08-25 03:35:52');
+INSERT INTO `users` VALUES (5,'hieu','$2a$10$DcjPJIdYl9Er1LFkmDwM/OuQDNMyryB.S97KanI7FGZQX6SOovGKu','hieu@gmail.com','Duong Hieu','https://res.cloudinary.com/dsfdkyanf/image/upload/v1724040995/bnsygaltrlurcrvhxmso.jpg','ROLE_CITIZEN','2024-08-19 04:16:36','2024-08-24 13:54:48'),(6,'test','$2a$10$r20lXo5VpNOIC640329L9.VGfCrWy8fnCZvJgyYyYa12x33Qfjkmi','test@gmail.com','test','https://res.cloudinary.com/dsfdkyanf/image/upload/v1724829763/deivxpnzszvzt2l3tala.png','ROLE_CITIZEN','2024-08-19 04:20:26','2024-08-28 07:22:43'),(15,'test00','$2a$10$gVzMqHWmOYS.5pX0l1bXzOZJrQV66X9HiWFoFS5gtFw7Is9ynlyKC','tt44@gmail.com','Hiếu','https://res.cloudinary.com/dsfdkyanf/image/upload/v1724077513/wuzmacetkufufatnmtym.jpg','ROLE_CITIZEN','2024-08-19 14:25:16','2024-08-24 13:54:48'),(26,'admin','$2a$10$hOoe2YqviKEso4CEWAZmpuwT5woHgXHZmqU9AnlB7smkDDxky3rly','admin@busplanner.com','Duong Hieu','https://res.cloudinary.com/dsfdkyanf/image/upload/v1724388467/nxvpkvhr04zzkn3exsl6.jpg','ROLE_ADMIN','2024-08-23 04:47:48','2024-08-24 13:55:22'),(27,'thuan','$2a$10$Thhj02wbvV9L6IZL3fbQse6dX9JLRx8T2dXXDCanqn4NXPWyniNi.','thuan@gmail.com','Phan Minh Thuận','https://res.cloudinary.com/dsfdkyanf/image/upload/v1724556952/tjadip0srvudzflvivlz.png','ROLE_CITIZEN','2024-08-25 03:35:52','2024-08-29 08:44:07'),(28,'hello','$2a$10$MOYznJmLNRZ3g2QT3r15Z.n8q.Ie8jWHT3oXAkKOiwVDlu.WEbzE6','helon@gmail.com','Hello','https://res.cloudinary.com/dsfdkyanf/image/upload/v1724732187/mylhf6mvmvgi4rnc1dzu.png','ROLE_CITIZEN','2024-08-27 04:16:27','2024-08-28 05:52:09'),(29,'fine','$2a$10$jEaajmsBiJue8Sk6wrw3pep8D9j5GnH7vFoxT5z4DlMY.bU4RsAXi','fine@gmail.com','fine','https://res.cloudinary.com/dsfdkyanf/image/upload/v1724733407/qfwiufagno7ewrr59g7t.png','ROLE_CITIZEN','2024-08-27 04:36:47','2024-08-27 04:36:47'),(30,'fuck','$2a$10$lxUanJXsN87kRIZaykA44.T/K6yJEwEFiaPV/Lp6Q24F01jrsRLpy','fuc@gmail.com','fuck u','https://res.cloudinary.com/dsfdkyanf/image/upload/v1724814908/j9ucqfzwlfg82qlbtp8x.png','ROLE_CITIZEN','2024-08-28 03:15:08','2024-08-28 03:15:08'),(31,'pack','$2a$10$ZDdQdPKZ3osP8L.Xq/07neqzwfR6qdCz8FKztn3j3vl3bGecJc6KK','pack@gmail.com','test','https://res.cloudinary.com/dsfdkyanf/image/upload/v1724825396/ij1szuizztjxwuiouq5p.png','ROLE_CITIZEN','2024-08-28 06:09:57','2024-08-28 06:09:57');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -265,4 +265,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-08-26 16:58:57
+-- Dump completed on 2024-09-03  9:51:45
