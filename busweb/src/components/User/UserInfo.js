@@ -15,45 +15,28 @@ import {
   Tooltip,
   OverlayTrigger
 } from "react-bootstrap";
-import cookie from "react-cookies";
 import { authAPIs, endpoints } from "../../configs/APIs";
 import styles from "../Style"; // Import styles from the style.js
+import { useAuth } from '../AuthContext';
 
 const UserInfo = () => {
-  const [userInfo, setUserInfo] = useState(null);
+  const { userInfo, fetchUserInfo } = useAuth();
   const [error, setError] = useState("");
-  const [showModal, setShowModal] = useState(false); // State for modal visibility
-  const [showAvatarModal, setShowAvatarModal] = useState(false); // State for avatar modal
-  const [newFullName, setNewFullName] = useState(""); // State for new full name
-  const [newEmail, setNewEmail] = useState(""); // State for new email
-  const [newAvatar, setNewAvatar] = useState(null); // State for new avatar file
-  const [editField, setEditField] = useState(""); // State to track which field is being edited
-  const [isLoading, setIsLoading] = useState(false); // State for loading indicator
-  const [isUpdating, setIsUpdating] = useState(false); // State for update loading indicator
+  const [showModal, setShowModal] = useState(false);
+  const [showAvatarModal, setShowAvatarModal] = useState(false);
+  const [newFullName, setNewFullName] = useState("");
+  const [newEmail, setNewEmail] = useState("");
+  const [newAvatar, setNewAvatar] = useState(null);
+  const [editField, setEditField] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
 
   useEffect(() => {
-    const fetchUserInfo = async () => {
-      setIsLoading(true); // Set loading state to true
-      try {
-        const token = cookie.load("authToken"); // Load token from cookies
-        const response = await authAPIs().get(endpoints["current-user"], {
-          headers: {
-            Authorization: `${token}`,
-          },
-        });
-        setUserInfo(response.data);
-        setNewFullName(response.data.fullName); // Initialize with current data
-        setNewEmail(response.data.email); // Initialize with current data
-      } catch (err) {
-        setError("Unable to fetch user information.");
-        console.error("Error fetching user info:", err);
-      } finally {
-        setIsLoading(false); // Set loading state to false
-      }
-    };
-
-    fetchUserInfo();
-  }, []);
+    if (userInfo) {
+      setNewFullName(userInfo.fullName);
+      setNewEmail(userInfo.email);
+    }
+  }, [userInfo]);
 
   const handleShowModal = (field) => {
     setEditField(field);
@@ -69,52 +52,50 @@ const UserInfo = () => {
   const handleAvatarChange = (e) => setNewAvatar(e.target.files[0]);
 
   const handleSaveChanges = async () => {
-    setIsUpdating(true); // Set updating state to true
+    setIsUpdating(true);
     try {
-      const token = cookie.load("authToken");
       const formData = new FormData();
       if (editField === "fullName") {
         formData.append("fullName", newFullName);
       } else if (editField === "email") {
         formData.append("email", newEmail);
       } else if (newAvatar) {
-        formData.append("file", newAvatar); // Append the file with key "file"
+        formData.append("file", newAvatar);
       }
 
-      // Update user information
-      await authAPIs().post(endpoints["update"], formData, {
-        headers: {
-          Authorization: `${token}`,
-        },
-      });
+      await authAPIs().post(endpoints["update"], formData);
 
-      // Refetch user information
-      const response = await authAPIs().get(endpoints["current-user"], {
-        headers: {
-          Authorization: `${token}`,
-        },
-      });
+      await fetchUserInfo();
 
-      setUserInfo(response.data);
-      setNewFullName(response.data.fullName); // Update state with new data
-      setNewEmail(response.data.email); // Update state with new data
-      setNewAvatar(null); // Clear selected avatar file
+      setNewAvatar(null);
       setShowModal(false);
       setShowAvatarModal(false);
     } catch (err) {
-      if (err.response) {
-        console.error("Error response data:", err.response.data);
-        console.error("Error response status:", err.response.status);
-        console.error("Error response headers:", err.response.headers);
-        setError(`Error: ${err.response.status} - ${err.response.data.message}`);
-      } else {
-        console.error("Error:", err.message);
-        setError("Error: Unable to save changes.");
-      }
+      console.error("Error:", err);
+      setError("Error: Unable to save changes.");
     } finally {
-      setIsUpdating(false); // Set updating state to false
+      setIsUpdating(false);
     }
   };
+
+  if (isLoading) {
+    return (
+      <Container className="mt-5">
+        <Spinner animation="border" role="status">
+          <span className="sr-only">Loading...</span>
+        </Spinner>
+      </Container>
+    );
+  }
+
+  if (!userInfo) {
+    return (
+      <Container className="mt-5">
+        <Alert variant="info">Hãy đăng nhập để xem cập nhật</Alert>
+      </Container>
+    );
+  }
+  
 
   return (
     <Container className="mt-5">
