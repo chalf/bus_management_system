@@ -13,7 +13,7 @@ export const AuthProvider = ({ children }) => {
       if (token) {
         const response = await authAPIs().get(endpoints['current-user'], {
           headers: {
-            Authorization: `${token}`,
+            Authorization: `Bearer ${token}`,
           },
         });
         setUserInfo(response.data);
@@ -45,5 +45,6 @@ export const AuthProvider = ({ children }) => {
     </AuthContext.Provider>
   );
 };
+
 
 export const useAuth = () => useContext(AuthContext);

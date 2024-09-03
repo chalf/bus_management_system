@@ -41,7 +41,37 @@
                     </td>
                 </tr>
             </table>
+
+            <!-- Buttons to navigate back and toggle edit form -->
             <a href="${pageContext.request.contextPath}/admin/routes" class="btn btn-primary">Quay lại</a>
+            <button type="button" class="btn btn-warning ml-2" id="toggleEditFormBtn">Thay đổi thông tin tuyến xe</button>
+
+            <!-- Edit Route Form (Initially Hidden) -->
+            <div class="form-container" id="editRouteForm" style="display: none;">
+                <h3>Chỉnh sửa thông tin tuyến xe</h3>
+                <form:form action="${pageContext.request.contextPath}/admin/routes/update/${route.routeId}" method="post" modelAttribute="route">
+                    <div class="mb-3">
+                        <label for="routeName" class="form-label">Tên tuyến đường</label>
+                        <form:input id="routeName" path="routeName" cssClass="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="startPoint" class="form-label">Nơi bắt đầu</label>
+                        <form:input id="startPoint" path="startPoint" cssClass="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="endPoint" class="form-label">Nơi kết thúc</label>
+                        <form:input id="endPoint" path="endPoint" cssClass="form-control"  />
+                    </div>
+                    <div class="mb-3">
+                        <label for="direction" class="form-label">Hướng</label>
+                        <form:select id="direction" path="direction" class="form-control" >
+                            <option value="inbound">Hướng về</option>
+                            <option value="outbound">Hướng đi</option>
+                        </form:select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                </form:form>
+            </div>
 
             <h3 class="mt-4">Các điểm dừng trên tuyến đường</h3>
             <table class="table table-striped table-bordered mt-3">
@@ -75,10 +105,8 @@
                 </tbody>
             </table>
 
-            <!-- Toggle Form Button -->
-            <button type="button" class="btn btn-success mb-3" id="toggleFormBtn">Thêm Điểm Dừng</button>
-
             <!-- Add Route Stop Form (Initially Hidden) -->
+            <button type="button" class="btn btn-success mb-3" id="toggleFormBtn">Thêm Điểm Dừng</button>
             <div class="form-container" id="addBusForm" style="display: none;">
                 <h3>Thêm Điểm Dừng</h3>
                 <c:url value="/admin/routes/${route.routeId}/" var="postRouteStop" />
@@ -110,10 +138,15 @@
         <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-        <!-- Toggle Form Script -->
+        <!-- Toggle Form Scripts -->
         <script>
             document.getElementById('toggleFormBtn').addEventListener('click', function () {
                 var form = document.getElementById('addBusForm');
+                form.style.display = form.style.display === 'none' ? 'block' : 'none';
+            });
+
+            document.getElementById('toggleEditFormBtn').addEventListener('click', function () {
+                var form = document.getElementById('editRouteForm');
                 form.style.display = form.style.display === 'none' ? 'block' : 'none';
             });
         </script>

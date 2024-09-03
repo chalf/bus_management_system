@@ -120,4 +120,16 @@ public class RouteController {
             return "routePage";
         }
     }
+    @PostMapping("/admin/routes/update/{id}")
+    public String updateRoute(@PathVariable("id") int routeId, @ModelAttribute("route") Routes route, Model model) {
+        try {
+            // Set the route ID to ensure it's updating the correct route
+            route.setRouteId(routeId);
+            routeService.addOrUpdateRoute(route); // Use existing function to save or update the route
+            return "redirect:/admin/route/" + routeId; // Redirect back to the route detail page
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "routeDetailPage"; // Return to the route detail page if there's an error
+        }
+    }
 }

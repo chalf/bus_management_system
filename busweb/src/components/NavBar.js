@@ -1,10 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Navbar, Nav, Container, NavDropdown } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaUser } from 'react-icons/fa';
-import cookie from 'react-cookies';
-import axios from 'axios';
-import { authAPIs, endpoints } from '../configs/APIs'; 
+
 import { useAuth } from './AuthContext';
 
 const NavBar = () => {
@@ -48,6 +46,7 @@ const NavBar = () => {
               {userInfo ? (
                 <>
                   <NavDropdown.Item as={Link} to="/user-info">Xem trang cá nhân</NavDropdown.Item>
+                  <NavDropdown.Item as={Link} to="/user-info">Thay đổi mật khẩu</NavDropdown.Item>
                   <NavDropdown.Item onClick={handleLogout}>Đăng xuất</NavDropdown.Item>
                 </>
               ) : (
