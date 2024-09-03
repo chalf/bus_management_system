@@ -47,7 +47,14 @@
                                 <label for="address" class="form-label">Địa chỉ</label>
                                 <form:input id="address" path="address" cssClass="form-control" />
                             </div>
-
+                            <div class="mb-3">
+                                <label for="latitude" class="form-label">Vĩ độ</label>
+                                <form:input id="latitude" path="latitude" cssClass="form-control" />
+                            </div>
+                            <div class="mb-3">
+                                <label for="longitude" class="form-label">Kinh độ</label>
+                                <form:input id="longitude" path="longitude" cssClass="form-control" />
+                            </div>
                             <button type="submit" class="btn btn-primary">Thêm điểm dừng</button>
                         </form:form>
                     </div>
@@ -73,49 +80,91 @@
                                     <td><span class="highlight-text">${stop.latitude}</span></td>
                                     <td><span class="highlight-text">${stop.longitude}</span></td>
                                     <td class="text-center">
+                                        <!-- Edit Button -->
+                                        <button type="button" class="btn btn-sm btn-warning" onclick="showUpdateForm(${stop.stopId}, '${stop.stopName}', '${stop.address}', '${stop.latitude}', '${stop.longitude}')">
+                                            <i class="fas fa-edit"></i> Thay đổi
+                                        </button>
+                                        <!-- Delete Button -->
                                         <form action="${pageContext.request.contextPath}/admin/stops/delete/${stop.stopId}" method="post" style="display:inline;" onsubmit="return confirmDelete();">
                                             <button type="submit" class="btn btn-sm btn-danger">
                                                 <i class="fas fa-trash"></i> Xóa
                                             </button>
                                         </form>
+                                        
                                     </td>
                                 </tr>
                             </c:forEach>
                         </tbody>
                     </table>
+                    
+                    <!-- Update Stop Form (Initially Hidden) -->
+                    <div class="form-container" id="updateStopForm">
+                        <h3>Thay đổi điểm dừng</h3>
+                        <c:url value="/admin/stops/update" var="updateStopUrl" />
+                        <form:form id="updateForm" action="${updateStopUrl}" method="post" modelAttribute="stop">
+                            <input type="hidden" name="stopId" id="updateStopId">
+                            <div class="mb-3">
+                                <label for="updateStopName" class="form-label">Tên điểm dừng</label>
+                                <form:input id="updateStopName" path="stopName" cssClass="form-control" />
+                            </div>
+                            <div class="mb-3">
+                                <label for="updateAddress" class="form-label">Địa chỉ</label>
+                                <form:input id="updateAddress" path="address" cssClass="form-control" />
+                            </div>
+                            <div class="mb-3">
+                                <label for="updateLatitude" class="form-label">Vĩ độ</label>
+                                <form:input id="updateLatitude" path="latitude" cssClass="form-control" />
+                            </div>
+                            <div class="mb-3">
+                                <label for="updateLongitude" class="form-label">Kinh độ</label>
+                                <form:input id="updateLongitude" path="longitude" cssClass="form-control" />
+                            </div>
+                            <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                        </form:form>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Bootstrap JS and dependencies -->
+        <!-- Scripts -->
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-        <!-- FontAwesome for icons -->
         <script src="https://kit.fontawesome.com/a076d05399.js"></script>
-        <!-- Highlighting Script -->
         <script>
-                                            $(document).ready(function () {
-                                                var searchText = "${param.q}";
-                                                if (searchText) {
-                                                    $(".highlight-text").each(function () {
-                                                        var text = $(this).text();
-                                                        var regex = new RegExp(searchText, "gi");
-                                                        var newText = text.replace(regex, function (matchedText) {
-                                                            return "<span class='highlight'>" + matchedText + "</span>";
-                                                        });
-                                                        $(this).html(newText);
-                                                    });
-                                                }
+            $(document).ready(function () {
+                var searchText = "${param.q}";
+                if (searchText) {
+                    $(".highlight-text").each(function () {
+                        var text = $(this).text();
+                        var regex = new RegExp(searchText, "gi");
+                        var newText = text.replace(regex, function (matchedText) {
+                            return "<span class='highlight'>" + matchedText + "</span>";
+                        });
+                        $(this).html(newText);
+                    });
+                }
 
-                                                // Toggle form visibility
-                                                $("#addStopBtn").click(function () {
-                                                    $("#addStopForm").toggle();
-                                                });
-                                            });
-                                            function confirmDelete() {
-                                                return confirm("Bạn chắc chắn muốn xóa?");
-                                            }
+                // Toggle form visibility
+                $("#addStopBtn").click(function () {
+                    $("#addStopForm").toggle();
+                });
+            });
+
+            function confirmDelete() {
+                return confirm("Bạn chắc chắn muốn xóa?");
+            }
+
+            function showUpdateForm(stopId, stopName, address, latitude, longitude) {
+                // Fill form fields with existing stop data
+                $('#updateStopId').val(stopId);
+                $('#updateStopName').val(stopName);
+                $('#updateAddress').val(address);
+                $('#updateLatitude').val(latitude);
+                $('#updateLongitude').val(longitude);
+                // Show the form
+                $("#updateStopForm").show();
+            }
         </script>
     </body>
 </html>

@@ -49,10 +49,10 @@ public class StopController {
                                   RedirectAttributes redirectAttributes) {
         try {
             stopService.addorUpdateStop(stop);
-            return "successAdding";
+            return "redirect:/admin/stops"; // Redirect after successful operation
         } catch (Exception e) {
             model.addAttribute("errorMessage", e.getMessage());
-            return "stopPage"; // The name of your JSP file
+            return "stopPage"; 
         }
     }
     
@@ -64,6 +64,18 @@ public class StopController {
         } catch (Exception e) {
             model.addAttribute("errorMessage", e.getMessage());
             return "stopPage";
+        }
+    }
+    
+    @PostMapping("/admin/stops/update")
+    public String updateStop(Model model, @ModelAttribute(value = "stop") Stops stop,
+                             RedirectAttributes redirectAttributes) {
+        try {
+            stopService.addorUpdateStop(stop); // Use the same method for adding/updating
+            return "redirect:/admin/stops"; // Redirect after successful operation
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "stopPage"; 
         }
     }
     
