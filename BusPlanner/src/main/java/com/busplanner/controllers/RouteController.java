@@ -108,8 +108,9 @@ public class RouteController {
         routeStop.setDirection(direction);
 
         routestopService.addOrUpdateRouteStop(routeStop);
-        return "successAdding";
+        return "redirect:/admin/route/" + routeId;
     }
+
     @PostMapping("/admin/routes/delete/{routeId}")
     public String deleteRoute(@PathVariable("routeId") int routeId, Model model) {
         try {
@@ -120,6 +121,7 @@ public class RouteController {
             return "routePage";
         }
     }
+
     @PostMapping("/admin/routes/update/{id}")
     public String updateRoute(@PathVariable("id") int routeId, @ModelAttribute("route") Routes route, Model model) {
         try {
