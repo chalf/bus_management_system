@@ -27,6 +27,7 @@ const UserInfo = () => {
   const [newFullName, setNewFullName] = useState("");
   const [newEmail, setNewEmail] = useState("");
   const [newAvatar, setNewAvatar] = useState(null);
+  const [newPassword, setNewPassword] = useState(""); // State for new password
   const [editField, setEditField] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
@@ -59,6 +60,8 @@ const UserInfo = () => {
         formData.append("fullName", newFullName);
       } else if (editField === "email") {
         formData.append("email", newEmail);
+      } else if (editField === "password") {
+        formData.append("password", newPassword); // Add new password to form data
       } else if (newAvatar) {
         formData.append("file", newAvatar);
       }
@@ -95,7 +98,6 @@ const UserInfo = () => {
       </Container>
     );
   }
-  
 
   return (
     <Container className="mt-5">
@@ -114,7 +116,7 @@ const UserInfo = () => {
               <Card.Body>
                 <OverlayTrigger
                   placement="top"
-                  overlay={<Tooltip id="avatar-tooltip">Click to change avatar</Tooltip>}
+                  overlay={<Tooltip id="avatar-tooltip">Thay đổi Avatar</Tooltip>}
                 >
                   <Image
                     src={userInfo.avatarUrl}
@@ -152,6 +154,18 @@ const UserInfo = () => {
                           onClick={() => handleShowModal("email")}
                         >
                           Thay đổi
+                        </Button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td></td>
+                      <td></td>
+                      <td>
+                        <Button
+                          variant="primary"
+                          onClick={() => handleShowModal("password")}
+                        >
+                          Thay đổi mật khẩu
                         </Button>
                       </td>
                     </tr>
@@ -214,6 +228,19 @@ const UserInfo = () => {
                 />
               </Form.Group>
             )}
+            {editField === "password" && (
+              <Form.Group controlId="formPassword">
+                <Form.Label>
+                  <strong>Mật khẩu mới:</strong>
+                </Form.Label>
+                <Form.Control
+                  type="password"
+                  placeholder="Nhập mật khẩu mới"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                />
+              </Form.Group>
+            )}
           </Form>
         </Modal.Body>
         <Modal.Footer>
@@ -223,7 +250,7 @@ const UserInfo = () => {
           <Button
             variant="primary"
             onClick={handleSaveChanges}
-            disabled={isUpdating} // Disable button while updating
+            disabled={isUpdating}
           >
             {isUpdating ? (
               <Spinner animation="border" size="sm" />
@@ -260,7 +287,7 @@ const UserInfo = () => {
           <Button
             variant="primary"
             onClick={handleSaveChanges}
-            disabled={isUpdating} // Disable button while updating
+            disabled={isUpdating}
           >
             {isUpdating ? (
               <Spinner animation="border" size="sm" />

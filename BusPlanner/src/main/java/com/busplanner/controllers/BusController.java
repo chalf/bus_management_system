@@ -38,7 +38,7 @@ public class BusController {
     public String addBus(Model model, @ModelAttribute(value = "bus") Buses bus){
         try {
             busService.addOrUpdateBus(bus);
-            return "successAdding";
+            return "redirect:/admin/buses";
         } catch (Exception e) {
             model.addAttribute("errorMessage", e.getMessage());
         }
@@ -51,6 +51,32 @@ public class BusController {
             return "redirect:/admin/buses";
         } catch (Exception e) {
             model.addAttribute("errorMessage", e.getMessage());
+            return "busPage";
+        }
+    }
+    
+    @GetMapping("/admin/buses/edit/{busId}")
+    public String editBus(@PathVariable("busId") int busId, Model model) {
+        Buses bus = busService.getBusById(busId);
+        if (bus == null) {
+            model.addAttribute("errorMessage", "Bus not found");
+        } else {
+            model.addAttribute("bus", bus);
+        }
+        model.addAttribute("buses", busService.getListBus());
+        model.addAttribute("routes", routeService.getListRoutes(null));
+        return "busPage";
+    }
+
+    @PostMapping("/admin/buses/update")
+    public String updateBus(@ModelAttribute("bus") Buses bus, Model model) {
+        try {
+            busService.addOrUpdateBus(bus);
+            return "redirect:/admin/buses";
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            model.addAttribute("buses", busService.getListBus());
+            model.addAttribute("routes", routeService.getListRoutes(null));
             return "busPage";
         }
     }

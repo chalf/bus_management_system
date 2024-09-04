@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import React from "react";
 
 const GoogleMapsScript = () => {
   useEffect(() => {
@@ -16,7 +15,7 @@ const GoogleMapsScript = () => {
 
     script.onload = () => {
       if (window.google && window.google.maps) {
-        window.initMap(); // Call the initMap function you assigned in your HomePage component
+        console.log("Google Maps API loaded successfully.");
       } else {
         console.error("Google Maps API failed to load.");
       }
@@ -34,4 +33,3 @@ const GoogleMapsScript = () => {
 };
 
 export default GoogleMapsScript;
-
