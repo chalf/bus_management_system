@@ -4,11 +4,6 @@
  */
 package com.busplanner.pojo;
 
-import com.busplanner.validator.beaninterface.UniqueEmail;
-import com.busplanner.validator.beaninterface.UniqueUsername;
-import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonSetter;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
@@ -26,18 +21,16 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
-import javax.validation.constraints.*;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
  *
- * @author ASUS
+ * @author Admin
  */
 @Entity
 @Table(name = "users")
-@XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Users.findAll", query = "SELECT u FROM Users u"),
     @NamedQuery(name = "Users.findByUserId", query = "SELECT u FROM Users u WHERE u.userId = :userId"),
@@ -58,28 +51,32 @@ public class Users implements Serializable {
     @Column(name = "user_id")
     private Integer userId;
     @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 50)
     @Column(name = "username")
-    @Pattern(regexp = "^[a-zA-Z][a-zA-Z0-9]*$", message = "{validation.user.username.format}")
-    @Size(min = 1, max = 50, message = "{validation.user.username}")
-//    @UniqueUsername(message = "{validation.user.username.exists}")
     private String username;
     @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 255)
     @Column(name = "password")
-    @NotBlank(message = "{validation.user.password}")
     private String password;
+    // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
     @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 100)
     @Column(name = "email")
-    @Email(message = "{validation.user.email.check}")
-    @NotEmpty(message = "{validation.user.email}")
-//    @UniqueEmail(message = "{validation.user.email.exists}")
     private String email;
     @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 100)
     @Column(name = "full_name")
-    @NotBlank(message = "{validation.user.fullName}")
     private String fullName;
+    @Size(max = 255)
     @Column(name = "avatar_url")
     private String avatarUrl;
     @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 12)
     @Column(name = "role")
     private String role;
     @Column(name = "created_at")
@@ -88,10 +85,8 @@ public class Users implements Serializable {
     @Column(name = "updated_at")
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedAt;
-    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "userId")
     private Set<Favoriteroutes> favoriteroutesSet;
-    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "userId")
     private Set<Trafficreports> trafficreportsSet;
     @Transient
@@ -185,7 +180,6 @@ public class Users implements Serializable {
         this.updatedAt = updatedAt;
     }
 
-    @XmlTransient
     public Set<Favoriteroutes> getFavoriteroutesSet() {
         return favoriteroutesSet;
     }
@@ -194,7 +188,6 @@ public class Users implements Serializable {
         this.favoriteroutesSet = favoriteroutesSet;
     }
 
-    @XmlTransient
     public Set<Trafficreports> getTrafficreportsSet() {
         return trafficreportsSet;
     }
@@ -232,7 +225,7 @@ public class Users implements Serializable {
      * @return the file
      */
     public MultipartFile getFile() {
-        return this.file;
+        return file;
     }
 
     /**
@@ -241,7 +234,7 @@ public class Users implements Serializable {
     public void setFile(MultipartFile file) {
         this.file = file;
     }
-
+    
     public static int duplicateUsername() {
         return -1;
     }
@@ -249,5 +242,5 @@ public class Users implements Serializable {
     public static int duplicateEmail() {
         return 0;
     }
-
+    
 }

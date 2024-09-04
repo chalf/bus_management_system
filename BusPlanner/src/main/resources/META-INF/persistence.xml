@@ -5,5 +5,10 @@
     <class>com.busplanner.pojo.Routestops</class>
     <class>com.busplanner.pojo.Routes</class>
     <class>com.busplanner.pojo.Schedules</class>
+    <class>com.busplanner.pojo.Stops</class>
+    <class>com.busplanner.pojo.Users</class>
+    <class>com.busplanner.pojo.Favoriteroutes</class>
+    <class>com.busplanner.pojo.Trafficreports</class>
+    <class>com.busplanner.pojo.Buses</class>
   </persistence-unit>
 </persistence>

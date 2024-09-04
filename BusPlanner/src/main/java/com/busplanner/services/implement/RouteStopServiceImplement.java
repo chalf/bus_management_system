@@ -10,14 +10,15 @@ import com.busplanner.services.RouteStopService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
  * @author ASUS
  */
 @Service
-public class RouteStopServiceImplement implements RouteStopService{
-    
+public class RouteStopServiceImplement implements RouteStopService {
+
     @Autowired
     private RouteStopRepository routeStopRepository;
 
@@ -50,5 +51,13 @@ public class RouteStopServiceImplement implements RouteStopService{
     public List<Routestops> getRouteStopsByStopId(int stopId) {
         return routeStopRepository.getRouteStopsByStopId(stopId);
     }
-    
+
+    @Override
+    @Transactional
+    public void updateRouteStopsOrder(Integer routeId, List<Routestops> routeStops) {
+        for (Routestops routeStop : routeStops) {
+            routeStopRepository.updateStopOrder(routeStop.getRouteStopId(), routeStop.getStopOrder());
+        }
+    }
+
 }

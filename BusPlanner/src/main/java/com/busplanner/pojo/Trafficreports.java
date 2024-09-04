@@ -21,15 +21,15 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  *
- * @author ASUS
+ * @author Admin
  */
 @Entity
 @Table(name = "trafficreports")
-@XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Trafficreports.findAll", query = "SELECT t FROM Trafficreports t"),
     @NamedQuery(name = "Trafficreports.findByReportId", query = "SELECT t FROM Trafficreports t WHERE t.reportId = :reportId"),
@@ -48,17 +48,23 @@ public class Trafficreports implements Serializable {
     private Integer reportId;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Basic(optional = false)
+    @NotNull
     @Column(name = "latitude")
     private BigDecimal latitude;
     @Basic(optional = false)
+    @NotNull
     @Column(name = "longitude")
     private BigDecimal longitude;
     @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 11)
     @Column(name = "report_type")
     private String reportType;
     @Lob
+    @Size(max = 65535)
     @Column(name = "description")
     private String description;
+    @Size(max = 255)
     @Column(name = "image_url")
     private String imageUrl;
     @Column(name = "created_at")

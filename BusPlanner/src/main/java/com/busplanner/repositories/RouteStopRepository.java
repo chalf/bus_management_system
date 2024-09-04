@@ -18,4 +18,5 @@ public interface RouteStopRepository {
     void deleteRouteStop(int routeStopId);
     List<Routestops> getRouteStopsByRouteId(int routeId);
     List<Routestops> getRouteStopsByStopId(int stopId);
+    void updateStopOrder(int routeStopId, int newOrder);
 }

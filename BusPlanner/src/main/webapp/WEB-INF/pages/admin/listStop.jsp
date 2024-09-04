@@ -41,19 +41,11 @@
                         <form:form action="${postStop}" method="post" modelAttribute="stop">
                             <div class="mb-3">
                                 <label for="stopName" class="form-label">Tên điểm dừng</label>
-                                <form:input id="stopName" path="stopName" cssClass="form-control" />
+                                <form:input id="stopName" path="stopName" cssClass="form-control" required="required" />
                             </div>
                             <div class="mb-3">
                                 <label for="address" class="form-label">Địa chỉ</label>
-                                <form:input id="address" path="address" cssClass="form-control" />
-                            </div>
-                            <div class="mb-3">
-                                <label for="latitude" class="form-label">Vĩ độ</label>
-                                <form:input id="latitude" path="latitude" cssClass="form-control" />
-                            </div>
-                            <div class="mb-3">
-                                <label for="longitude" class="form-label">Kinh độ</label>
-                                <form:input id="longitude" path="longitude" cssClass="form-control" />
+                                <form:input id="address" path="address" cssClass="form-control" required="required" />
                             </div>
                             <button type="submit" class="btn btn-primary">Thêm điểm dừng</button>
                         </form:form>
@@ -105,19 +97,11 @@
                             <input type="hidden" name="stopId" id="updateStopId">
                             <div class="mb-3">
                                 <label for="updateStopName" class="form-label">Tên điểm dừng</label>
-                                <form:input id="updateStopName" path="stopName" cssClass="form-control" />
+                                <form:input id="updateStopName" path="stopName" cssClass="form-control" required="required" />
                             </div>
                             <div class="mb-3">
                                 <label for="updateAddress" class="form-label">Địa chỉ</label>
-                                <form:input id="updateAddress" path="address" cssClass="form-control" />
-                            </div>
-                            <div class="mb-3">
-                                <label for="updateLatitude" class="form-label">Vĩ độ</label>
-                                <form:input id="updateLatitude" path="latitude" cssClass="form-control" />
-                            </div>
-                            <div class="mb-3">
-                                <label for="updateLongitude" class="form-label">Kinh độ</label>
-                                <form:input id="updateLongitude" path="longitude" cssClass="form-control" />
+                                <form:input id="updateAddress" path="address" cssClass="form-control" required="required" />
                             </div>
                             <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
                         </form:form>

@@ -4,9 +4,9 @@
  */
 package com.busplanner.dto;
 
-import com.busplanner.pojo.Routes;
-import com.busplanner.pojo.Stops;
+import com.busplanner.pojo.Buses;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -28,12 +28,20 @@ public class RouteSuggestion {
 
     // Điểm dừng gần nhất với điểm đi và điểm đến
     private StopDto startStop;
-    private StopDto endStop;
 
     // Tuyến trực tiếp hoặc tuyến bắt đầu trong trường hợp chuyển tiếp
     private RouteDto startRoute;
-    // Tuyến chuyển tiếp (nếu có)
+    private List<Buses> busesForStartRoute; // Danh sách xe buýt cho tuyến bắt đầu
+    
+    //Stop sẽ xuống và đợi Route chuyển tiếp (nếu có)
+    private StopDto transferStop; // nếu không có Route chuyển tiếp, nó sẽ là null
+    
+    // Tuyến chuyển tiếp (nếu có). Như thế sẽ là chỉ tìm tối đa 2 route (chuyển tiếp chỉ 1 lần)
     private RouteDto transferRoute;
+    private List<Buses> busesForTransferRoute; // Danh sách xe buýt cho tuyến chuyển tiếp, nếu có
+    
+    //Stop cuối cùng mà người dùng sẽ xuống
+    private StopDto endStop; 
 
     // Khoảng cách và thời gian đi bộ từ điểm đi tới điểm dừng gần nhất
     private double walkingDistanceToStartStop;
@@ -52,11 +60,13 @@ public class RouteSuggestion {
 
     // Constructor
     public RouteSuggestion(String startPoint, String endPoint, 
-            RouteDto startRoute, StopDto startStop, StopDto endStop, RouteDto transferRoute) {
+            RouteDto startRoute, StopDto startStop, StopDto transferStop,
+            StopDto endStop, RouteDto transferRoute) {
         this.startPoint = startPoint;
         this.endPoint = endPoint;
         this.startRoute = startRoute;
         this.startStop = startStop;
+        this.transferStop = transferStop;
         this.endStop = endStop;
         this.transferRoute = transferRoute;
     }

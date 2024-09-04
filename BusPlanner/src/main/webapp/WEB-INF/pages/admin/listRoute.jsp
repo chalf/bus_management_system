@@ -40,22 +40,15 @@
                         <form:form action="${postRoute}" method="post" modelAttribute="route">
                             <div class="mb-3">
                                 <label for="routeName" class="form-label">Tên tuyến đường</label>
-                                <form:input id="routeName" path="routeName" cssClass="form-control" />
+                                <form:input id="routeName" path="routeName" cssClass="form-control" required="required" />
                             </div>
                             <div class="mb-3">
                                 <label for="startPoint" class="form-label">Nơi bắt đầu</label>
-                                <form:input id="startPoint" path="startPoint" cssClass="form-control" />
+                                <form:input id="startPoint" path="startPoint" cssClass="form-control" required="required" />
                             </div>
                             <div class="mb-3">
                                 <label for="endPoint" class="form-label">Nơi kết thúc</label>
-                                <form:input id="endPoint" path="endPoint" cssClass="form-control"  />
-                            </div>
-                            <div class="mb-3">
-                                <label for="direction" class="form-label">Hướng</label>
-                                <form:select id="direction" path="direction" class="form-control" >
-                                    <option value="inbound">Hướng về</option>
-                                    <option value="outbound">Hướng đi</option>
-                                </form:select>
+                                <form:input id="endPoint" path="endPoint" cssClass="form-control" required="required" />
                             </div>
                             <button type="submit" class="btn btn-primary">Thêm tuyến đường</button>
                         </form:form>
@@ -69,7 +62,6 @@
                                 <th>Tên tuyến đường</th>
                                 <th>Nơi bắt đầu</th>
                                 <th>Nơi kết thúc</th>
-                                <th>Hướng</th>
                                 <th class="text-center"></th>
                             </tr>
                         </thead>
@@ -80,12 +72,6 @@
                                     <td><span class="highlight-text">${route.routeName}</span></td>
                                     <td><span class="highlight-text">${route.startPoint}</span></td>
                                     <td><span class="highlight-text">${route.endPoint}</span></td>
-                                    <td>
-                                        <c:choose>
-                                            <c:when test="${route.direction == 'inbound'}">Hướng về</c:when>
-                                            <c:otherwise>Hướng đi</c:otherwise>
-                                        </c:choose>
-                                    </td>
                                     <td class="text-center">
                                         <a href="<c:url value='/admin/route/${route.routeId}' />" class="btn btn-sm btn-warning">
                                             <i class="fas fa-edit"></i> Chi tiết
@@ -113,27 +99,27 @@
         <script src="https://kit.fontawesome.com/a076d05399.js"></script>
         <!-- Highlighting Script -->
         <script>
-                                            $(document).ready(function () {
-                                                var searchText = "${param.q}";
-                                                if (searchText) {
-                                                    $(".highlight-text").each(function () {
-                                                        var text = $(this).text();
-                                                        var regex = new RegExp(searchText, "gi");
-                                                        var newText = text.replace(regex, function (matchedText) {
-                                                            return "<span class='highlight'>" + matchedText + "</span>";
-                                                        });
-                                                        $(this).html(newText);
-                                                    });
-                                                }
+            $(document).ready(function () {
+                var searchText = "${param.q}";
+                if (searchText) {
+                    $(".highlight-text").each(function () {
+                        var text = $(this).text();
+                        var regex = new RegExp(searchText, "gi");
+                        var newText = text.replace(regex, function (matchedText) {
+                            return "<span class='highlight'>" + matchedText + "</span>";
+                        });
+                        $(this).html(newText);
+                    });
+                }
 
-                                                // Toggle form visibility
-                                                $("#addRouteBtn").click(function () {
-                                                    $("#addRouteForm").toggle();
-                                                });
-                                            });
-                                            function confirmDelete() {
-                                                return confirm("Bạn chắc chắn muốn xóa?");
-                                            }
+                // Toggle form visibility
+                $("#addRouteBtn").click(function () {
+                    $("#addRouteForm").toggle();
+                });
+            });
+            function confirmDelete() {
+                return confirm("Bạn chắc chắn muốn xóa?");
+            }
         </script>
     </body>
 </html>
