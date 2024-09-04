@@ -46,7 +46,6 @@ const NavBar = () => {
               {userInfo ? (
                 <>
                   <NavDropdown.Item as={Link} to="/user-info">Xem trang cá nhân</NavDropdown.Item>
-                  <NavDropdown.Item as={Link} to="/user-info">Thay đổi mật khẩu</NavDropdown.Item>
                   <NavDropdown.Item onClick={handleLogout}>Đăng xuất</NavDropdown.Item>
                 </>
               ) : (

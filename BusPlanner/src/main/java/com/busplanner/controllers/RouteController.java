@@ -69,7 +69,7 @@ public class RouteController {
     public String addRoute(Model model, @ModelAttribute(value = "route") Routes route) {
         try {
             routeService.addOrUpdateRoute(route);
-            return "successAdding";
+            return "redirect:/admin/routes/";
         } catch (Exception e) {
             model.addAttribute("errorMessage", e.getMessage());
         }
