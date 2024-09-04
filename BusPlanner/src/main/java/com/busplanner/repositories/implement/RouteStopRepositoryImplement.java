@@ -98,4 +98,15 @@ public class RouteStopRepositoryImplement implements RouteStopRepository {
         return s.createQuery(criteriaQuery).getResultList();
     }
 
+    @Override
+    @Transactional
+    public void updateStopOrder(int routeStopId, int newOrder) {
+        Session s = this.sessionFactory.getObject().getCurrentSession();
+        String hql = "UPDATE Routestops rs SET rs.stopOrder = :newOrder WHERE rs.routeStopId = :routeStopId";
+        s.createQuery(hql)
+                .setParameter("newOrder", newOrder)
+                .setParameter("routeStopId", routeStopId)
+                .executeUpdate();
+    }
+
 }

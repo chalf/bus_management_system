@@ -4,6 +4,7 @@
  */
 package com.busplanner.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
 import java.util.Set;
 import javax.persistence.Basic;
@@ -21,7 +22,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
@@ -29,13 +29,19 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @Entity
 @Table(name = "buses")
-@XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Buses.findAll", query = "SELECT b FROM Buses b"),
     @NamedQuery(name = "Buses.findByBusId", query = "SELECT b FROM Buses b WHERE b.busId = :busId"),
     @NamedQuery(name = "Buses.findByBusNumber", query = "SELECT b FROM Buses b WHERE b.busNumber = :busNumber")})
+@JsonIgnoreProperties({"routeId", "schedulesSet"})
 public class Buses implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "bus_id")
+    private Integer busId;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 20)
@@ -46,13 +52,6 @@ public class Buses implements Serializable {
     private Routes routeId;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "busId")
     private Set<Schedules> schedulesSet;
-
-    private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "bus_id")
-    private Integer busId;
 
     public Buses() {
     }
@@ -82,6 +81,22 @@ public class Buses implements Serializable {
         this.busNumber = busNumber;
     }
 
+    public Routes getRouteId() {
+        return routeId;
+    }
+
+    public void setRouteId(Routes routeId) {
+        this.routeId = routeId;
+    }
+
+    public Set<Schedules> getSchedulesSet() {
+        return schedulesSet;
+    }
+
+    public void setSchedulesSet(Set<Schedules> schedulesSet) {
+        this.schedulesSet = schedulesSet;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -105,22 +120,6 @@ public class Buses implements Serializable {
     @Override
     public String toString() {
         return "com.busplanner.pojo.Buses[ busId=" + busId + " ]";
-    }
-
-    public Routes getRouteId() {
-        return routeId;
-    }
-
-    public void setRouteId(Routes routeId) {
-        this.routeId = routeId;
-    }
-
-    public Set<Schedules> getSchedulesSet() {
-        return schedulesSet;
-    }
-
-    public void setSchedulesSet(Set<Schedules> schedulesSet) {
-        this.schedulesSet = schedulesSet;
     }
     
 }

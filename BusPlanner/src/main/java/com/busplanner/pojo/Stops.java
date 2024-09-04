@@ -4,7 +4,6 @@
  */
 package com.busplanner.pojo;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -22,16 +21,15 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  *
- * @author ASUS
+ * @author Admin
  */
 @Entity
 @Table(name = "stops")
-@XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Stops.findAll", query = "SELECT s FROM Stops s"),
     @NamedQuery(name = "Stops.findByStopId", query = "SELECT s FROM Stops s WHERE s.stopId = :stopId"),
@@ -50,16 +48,22 @@ public class Stops implements Serializable {
     @Column(name = "stop_id")
     private Integer stopId;
     @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 100)
     @Column(name = "stop_name")
     private String stopName;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Basic(optional = false)
+    @NotNull
     @Column(name = "latitude")
     private BigDecimal latitude;
     @Basic(optional = false)
+    @NotNull
     @Column(name = "longitude")
     private BigDecimal longitude;
     @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 255)
     @Column(name = "address")
     private String address;
     @Column(name = "created_at")
@@ -69,7 +73,6 @@ public class Stops implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedAt;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "stopId")
-    @JsonIgnore
     private Set<Routestops> routestopsSet;
 
     public Stops() {
@@ -143,7 +146,6 @@ public class Stops implements Serializable {
         this.updatedAt = updatedAt;
     }
 
-    @XmlTransient
     public Set<Routestops> getRoutestopsSet() {
         return routestopsSet;
     }

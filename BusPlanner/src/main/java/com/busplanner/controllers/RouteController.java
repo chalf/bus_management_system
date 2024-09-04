@@ -96,8 +96,7 @@ public class RouteController {
     @PostMapping("/admin/routes/{id}/")
     public String addRouteStop(@PathVariable("id") int routeId,
             @RequestParam("stopId") int stopId,
-            @RequestParam("stopOrder") int order,
-            @RequestParam("direction") String direction) {
+            @RequestParam("stopOrder") int order) {
         Routes route = routeService.getRouteById(routeId);
         Stops stop = stopService.getStopById(stopId);
 
@@ -105,11 +104,11 @@ public class RouteController {
         routeStop.setRouteId(route);
         routeStop.setStopId(stop);
         routeStop.setStopOrder(order);
-        routeStop.setDirection(direction);
 
         routestopService.addOrUpdateRouteStop(routeStop);
-        return "successAdding";
+        return "redirect:/admin/route/" + routeId;
     }
+
     @PostMapping("/admin/routes/delete/{routeId}")
     public String deleteRoute(@PathVariable("routeId") int routeId, Model model) {
         try {
@@ -120,6 +119,7 @@ public class RouteController {
             return "routePage";
         }
     }
+
     @PostMapping("/admin/routes/update/{id}")
     public String updateRoute(@PathVariable("id") int routeId, @ModelAttribute("route") Routes route, Model model) {
         try {

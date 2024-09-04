@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 8.0.38, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.36, for Win64 (x86_64)
 --
 -- Host: localhost    Database: busapp
 -- ------------------------------------------------------
--- Server version	8.4.2
+-- Server version	8.0.36
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -28,7 +28,7 @@ CREATE TABLE `buses` (
   `route_id` int DEFAULT NULL,
   PRIMARY KEY (`bus_id`),
   KEY `route_id` (`route_id`),
-  CONSTRAINT `buses_ibfk_1` FOREIGN KEY (`route_id`) REFERENCES `routes` (`route_id`)
+  CONSTRAINT `buses_ibfk_1` FOREIGN KEY (`route_id`) REFERENCES `routes` (`route_id`) ON DELETE SET NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -38,7 +38,7 @@ CREATE TABLE `buses` (
 
 LOCK TABLES `buses` WRITE;
 /*!40000 ALTER TABLE `buses` DISABLE KEYS */;
-INSERT INTO `buses` VALUES (1,'123',1),(2,'112',3),(3,'115',2);
+INSERT INTO `buses` VALUES (1,'123',NULL),(2,'112',NULL),(3,'115',NULL);
 /*!40000 ALTER TABLE `buses` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -80,14 +80,13 @@ DROP TABLE IF EXISTS `routes`;
 CREATE TABLE `routes` (
   `route_id` int NOT NULL AUTO_INCREMENT,
   `route_name` varchar(100) NOT NULL,
-  `direction` enum('outbound','inbound') NOT NULL,
   `start_point` varchar(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
   `end_point` varchar(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
   `description` text,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`route_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -96,7 +95,7 @@ CREATE TABLE `routes` (
 
 LOCK TABLES `routes` WRITE;
 /*!40000 ALTER TABLE `routes` DISABLE KEYS */;
-INSERT INTO `routes` VALUES (1,'Phan Huy Thực - Nguyễn Hữu Thọ','outbound','Phan Huy Thực','Nguyễn Hữu Thọ',NULL,'2024-08-26 02:51:09','2024-08-26 09:43:52'),(2,'cong quynh','inbound','36 cong quynh','55 nguyen trai',NULL,'2024-08-26 04:00:23','2024-08-26 04:00:23'),(3,'Cho Ben Thanh - Quan 8','outbound','Cho Ben Thanh','Quan 8',NULL,NULL,NULL),(4,'lÃª vÄng lÆ°Æ¡ng','inbound','Cho Ben Thanh','pha huy thuc',NULL,NULL,NULL);
+INSERT INTO `routes` VALUES (8,'Chợ Bến Thành - Quận 8','Chợ Bến Thành','Quận 8',NULL,'2024-09-04 07:15:40','2024-09-04 07:15:40');
 /*!40000 ALTER TABLE `routes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -111,14 +110,13 @@ CREATE TABLE `routestops` (
   `route_stop_id` int NOT NULL AUTO_INCREMENT,
   `route_id` int NOT NULL,
   `stop_id` int NOT NULL,
-  `direction` enum('outbound','inbound') NOT NULL,
   `stop_order` int NOT NULL,
   PRIMARY KEY (`route_stop_id`),
   KEY `route_id` (`route_id`),
   KEY `stop_id` (`stop_id`),
   CONSTRAINT `routestops_ibfk_1` FOREIGN KEY (`route_id`) REFERENCES `routes` (`route_id`),
   CONSTRAINT `routestops_ibfk_2` FOREIGN KEY (`stop_id`) REFERENCES `stops` (`stop_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -127,7 +125,7 @@ CREATE TABLE `routestops` (
 
 LOCK TABLES `routestops` WRITE;
 /*!40000 ALTER TABLE `routestops` DISABLE KEYS */;
-INSERT INTO `routestops` VALUES (1,1,1,'inbound',1),(2,1,2,'inbound',2),(4,1,5,'outbound',3),(5,3,2,'outbound',1);
+INSERT INTO `routestops` VALUES (7,8,1,2),(8,8,2,1);
 /*!40000 ALTER TABLE `routestops` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -179,7 +177,7 @@ CREATE TABLE `stops` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`stop_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -188,7 +186,7 @@ CREATE TABLE `stops` (
 
 LOCK TABLES `stops` WRITE;
 /*!40000 ALTER TABLE `stops` DISABLE KEYS */;
-INSERT INTO `stops` VALUES (1,'Phan Huy Thực',10.74761520,106.70661890,'104 Phan Huy Thực, P, Quận 7, Hồ Chí Minh 72913, Việt Nam','2024-08-26 07:39:06','2024-08-26 07:39:35'),(2,'Lê Văn Lương',10.74685590,106.70458980,'219 Đ. Lê Văn Lương, Tân Kiểng, Quận 7, Hồ Chí Minh, Việt Nam','2024-08-26 07:41:05','2024-08-26 07:41:05'),(5,'Nguyễn Hữu Thọ',10.73981700,106.70092000,'358 Đ. Nguyễn Hữu Thọ, Tân Hưng, Quận 7, Hồ Chí Minh, Việt Nam','2024-08-26 09:04:35','2024-08-26 09:04:35');
+INSERT INTO `stops` VALUES (1,'Phan Huy Thực',10.74761520,106.70661890,'104 Phan Huy Thực, P, Quận 7, Hồ Chí Minh 72913, Việt Nam','2024-08-26 07:39:06','2024-08-26 07:39:35'),(2,'Lê Văn Lương',10.74685590,106.70458980,'219 Đ. Lê Văn Lương, Tân Kiểng, Quận 7, Hồ Chí Minh, Việt Nam','2024-08-26 07:41:05','2024-08-26 07:41:05'),(5,'Nguyễn Hữu Thọ',10.73982630,106.70100530,'358 Đ. Nguyễn Hữu Thọ, Tân Hưng, Quận 7, Hồ Chí Minh, Việt Nam','2024-09-04 03:04:18','2024-09-04 03:04:18'),(7,'Gigamall',10.82760030,106.72121320,'242 Đ. Phạm Văn Đồng, Thành phố, Thủ Đức, Hồ Chí Minh 700000, Việt Nam','2024-09-01 15:25:08','2024-09-01 15:25:08');
 /*!40000 ALTER TABLE `stops` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -265,4 +263,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-08-26 16:58:57
+-- Dump completed on 2024-09-04 15:37:39

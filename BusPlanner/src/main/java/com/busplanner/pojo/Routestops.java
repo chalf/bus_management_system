@@ -17,18 +17,18 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 /**
  *
- * @author ASUS
+ * @author Admin
  */
 @Entity
 @Table(name = "routestops")
 @NamedQueries({
     @NamedQuery(name = "Routestops.findAll", query = "SELECT r FROM Routestops r"),
     @NamedQuery(name = "Routestops.findByRouteStopId", query = "SELECT r FROM Routestops r WHERE r.routeStopId = :routeStopId"),
-    @NamedQuery(name = "Routestops.findByDirection", query = "SELECT r FROM Routestops r WHERE r.direction = :direction"),
     @NamedQuery(name = "Routestops.findByStopOrder", query = "SELECT r FROM Routestops r WHERE r.stopOrder = :stopOrder")})
 public class Routestops implements Serializable {
 
@@ -40,18 +40,15 @@ public class Routestops implements Serializable {
     private Integer routeStopId;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 8)
-    @Column(name = "direction")
-    private String direction;
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "stop_order")
     private int stopOrder;
     @JoinColumn(name = "route_id", referencedColumnName = "route_id")
     @ManyToOne(optional = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Routes routeId;
     @JoinColumn(name = "stop_id", referencedColumnName = "stop_id")
     @ManyToOne(optional = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Stops stopId;
 
     public Routestops() {
@@ -61,9 +58,8 @@ public class Routestops implements Serializable {
         this.routeStopId = routeStopId;
     }
 
-    public Routestops(Integer routeStopId, String direction, int stopOrder) {
+    public Routestops(Integer routeStopId, int stopOrder) {
         this.routeStopId = routeStopId;
-        this.direction = direction;
         this.stopOrder = stopOrder;
     }
 
@@ -73,14 +69,6 @@ public class Routestops implements Serializable {
 
     public void setRouteStopId(Integer routeStopId) {
         this.routeStopId = routeStopId;
-    }
-
-    public String getDirection() {
-        return direction;
-    }
-
-    public void setDirection(String direction) {
-        this.direction = direction;
     }
 
     public int getStopOrder() {

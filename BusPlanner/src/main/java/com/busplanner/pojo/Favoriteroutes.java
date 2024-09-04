@@ -16,15 +16,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author ASUS
+ * @author Admin
  */
 @Entity
 @Table(name = "favoriteroutes")
-@XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Favoriteroutes.findAll", query = "SELECT f FROM Favoriteroutes f"),
     @NamedQuery(name = "Favoriteroutes.findByFavoriteId", query = "SELECT f FROM Favoriteroutes f WHERE f.favoriteId = :favoriteId")})

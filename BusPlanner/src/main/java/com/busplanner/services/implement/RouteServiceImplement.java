@@ -8,9 +8,11 @@ import com.busplanner.component.DistanceMatrixService;
 import com.busplanner.dto.RouteDto;
 import com.busplanner.dto.RouteSuggestion;
 import com.busplanner.dto.StopDto;
+import com.busplanner.pojo.Buses;
 import com.busplanner.pojo.Routes;
 import com.busplanner.pojo.Routestops;
 import com.busplanner.pojo.Stops;
+import com.busplanner.repositories.BusRepository;
 import com.busplanner.repositories.RouteRepository;
 import com.busplanner.repositories.RouteStopRepository;
 import com.busplanner.repositories.StopRepository;
@@ -34,6 +36,8 @@ public class RouteServiceImplement implements RouteService {
     private StopRepository stopRepository;
     @Autowired
     private RouteStopRepository routeStopRepository;
+    @Autowired
+    private BusRepository busRepository;
 
     @Override
     @Transactional
@@ -59,6 +63,7 @@ public class RouteServiceImplement implements RouteService {
     }
 
     @Override
+    // Tìm tối đa 2 Route (tức là chuyển tiếp chỉ 1 lần)
     public List<RouteSuggestion> findRoutes(String startPoint, String endPoint,
             Stops nearestStartStop, Stops nearestEndStop) {
         List<RouteSuggestion> routeSuggestions = new ArrayList<>();
@@ -77,34 +82,50 @@ public class RouteServiceImplement implements RouteService {
             if (endRoutes.contains(startRoute)) {
                 StopDto nearestStartStopDto = new StopDto(nearestStartStop.getStopId(), nearestStartStop.getStopName(), nearestStartStop.getLatitude(), nearestStartStop.getLongitude(), nearestStartStop.getAddress());
                 StopDto nearestEndStopDto = new StopDto(nearestEndStop.getStopId(), nearestEndStop.getStopName(), nearestEndStop.getLatitude(), nearestEndStop.getLongitude(), nearestEndStop.getAddress());
-                RouteDto startRouteDto = new RouteDto(startRoute.getRouteId(), startRoute.getRouteName(), startRoute.getStartPoint(), startRoute.getEndPoint(), startRoute.getDirection());
-                
+                RouteDto startRouteDto = new RouteDto(startRoute.getRouteId(), startRoute.getRouteName(), startRoute.getStartPoint(), startRoute.getEndPoint());
+
                 routeSuggestions.add(new RouteSuggestion(startPoint, endPoint, startRouteDto,
-                        nearestStartStopDto, nearestEndStopDto, null));
+                        nearestStartStopDto, null, nearestEndStopDto, null));
             }
         }
 
         // 4. Tìm tuyến chuyển tiếp (nếu không có tuyến trực tiếp)
         if (routeSuggestions.isEmpty()) {
-            // Tìm các điểm dừng trung gian có thể đổi tuyến
+            // Tìm các điểm dừng trung gian có thể đổi tuyến: 
+            /* Duyệt các *Route đi qua Stop gần điểm đi* để lấy các Stop 
+                mà các Stop này sẽ là "ứng cử viên" để làm Stop trung gian
+             */
             for (Routes startRoute : startRoutes) {
+                /* stopsOnStartRoute chính là danh sách các Stop có thể làm Stop chuyển tiếp
+                vì Stop chuyển tiếp chắc chắn phải thuộc Route đang đi
+                 */
                 List<Stops> stopsOnStartRoute = new ArrayList<>();
                 List<Routestops> routeStopList = routeStopRepository.getRouteStopsByRouteId(startRoute.getRouteId());
                 for (Routestops rs : routeStopList) {
                     stopsOnStartRoute.add(rs.getStopId());
                 }
 
+                // Tìm Route chuyển tiếp
+                /* Duyệt qua các Stop trên */
                 for (Stops stop : stopsOnStartRoute) {
-                    // Kiểm tra xem có tuyến nào từ điểm dừng trung gian này đến điểm đến không
+                    /* Với mỗi *Stop có thể là Stop trung gian*, tìm các Route đi qua nó, gọi là transferRoutes */
                     List<Routes> transferRoutes = routeRepository.findByStopId(stop.getStopId());
+                    /* duyệt qua danh sách transferRoutes và kiểm tra xem liệu có tuyến đường nào trong danh sách này 
+                    cũng nằm trong endRoutes (danh sách các tuyến đường đi qua điểm dừng gần điểm đến) hay không
+                    Nếu có, điều này nghĩa là đã tìm thấy một tuyến đường mà người dùng có thể chuyển tiếp 
+                    từ startRoute sang một transferRoute khác tại điểm dừng stop để đến được điểm đến (endPoint)
+                     */
                     for (Routes transferRoute : transferRoutes) {
                         if (endRoutes.contains(transferRoute)) {
                             StopDto nearestStartStopDto = new StopDto(nearestStartStop.getStopId(), nearestStartStop.getStopName(), nearestStartStop.getLatitude(), nearestStartStop.getLongitude(), nearestStartStop.getAddress());
-                            
+                            StopDto nearestEndStopDto = new StopDto(nearestEndStop.getStopId(), nearestEndStop.getStopName(), nearestEndStop.getLatitude(), nearestEndStop.getLongitude(), nearestEndStop.getAddress());
                             StopDto stopDto = new StopDto(stop.getStopId(), stop.getStopName(), stop.getLatitude(), stop.getLongitude(), stop.getAddress());
-                            RouteDto startRouteDto = new RouteDto(startRoute.getRouteId(), startRoute.getRouteName(), startRoute.getStartPoint(), startRoute.getEndPoint(), startRoute.getDirection());
-                            RouteDto transferRouteDto = new RouteDto(transferRoute.getRouteId(), transferRoute.getRouteName(), transferRoute.getStartPoint(), transferRoute.getEndPoint(), transferRoute.getDirection());
-                            routeSuggestions.add(new RouteSuggestion(startPoint, endPoint, startRouteDto, nearestStartStopDto, stopDto, transferRouteDto));
+                            RouteDto startRouteDto = new RouteDto(startRoute.getRouteId(), startRoute.getRouteName(), startRoute.getStartPoint(), startRoute.getEndPoint());
+                            RouteDto transferRouteDto = new RouteDto(transferRoute.getRouteId(), transferRoute.getRouteName(), transferRoute.getStartPoint(), transferRoute.getEndPoint());
+                            routeSuggestions.add(
+                                    new RouteSuggestion(startPoint, endPoint, startRouteDto,
+                                            nearestStartStopDto, stopDto, nearestEndStopDto, transferRouteDto)
+                            );
                         }
                     }
                 }
@@ -141,6 +162,7 @@ public class RouteServiceImplement implements RouteService {
             suggestion.setWalkingDistanceToEndPoint(walkingToEndPoint.distance);
             suggestion.setWalkingTimeToEndPoint(walkingToEndPoint.duration);
 
+            //Cộng tổng khoảng cách và thời gian
             suggestion.setDistanceTotal(suggestion.getWalkingDistanceToStartStop()
                     + suggestion.getBusDistance()
                     + suggestion.getWalkingDistanceToEndPoint()
@@ -149,6 +171,17 @@ public class RouteServiceImplement implements RouteService {
                     + suggestion.getBusTime()
                     + suggestion.getWalkingTimeToEndPoint()
             );
+
+            //Lấy các Bus cho startRoute và transferRoute
+            List<Buses> busesForStartRoute = busRepository.getBusesByRouteId(suggestion.getStartRoute().getRouteId());
+            List<Buses> busesForTransferRoute = null;
+
+            // Kiểm tra nếu có tuyến chuyển tiếp
+            if (suggestion.getTransferRoute() != null) {
+                busesForTransferRoute = busRepository.getBusesByRouteId(suggestion.getTransferRoute().getRouteId());
+            }
+            suggestion.setBusesForStartRoute(busesForStartRoute);
+            suggestion.setBusesForTransferRoute(busesForTransferRoute);
         }
         return routeSuggestions;
     }
