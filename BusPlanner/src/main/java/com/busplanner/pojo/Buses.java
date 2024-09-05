@@ -20,6 +20,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -44,6 +45,7 @@ public class Buses implements Serializable {
     private Integer busId;
     @Basic(optional = false)
     @NotNull
+    @NotBlank(message = "{resources.bus.notnull}")
     @Size(min = 1, max = 20)
     @Column(name = "bus_number")
     private String busNumber;
