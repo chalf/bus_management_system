@@ -35,9 +35,11 @@ const styles = {
     padding: "20px",
     transition: "left 0.3s",
     zIndex: 999,
+    overflowY: 'auto',
   },
   offCanvasMenuOpen: {
     left: 0,
+    transform: 'translateX(0)',
   },
   title: {
     fontSize: "18px",
@@ -124,6 +126,36 @@ const styles = {
     borderRadius: '5px',
     padding: '5px 10px',
     cursor: 'pointer',
+  },
+  routeDetailsBox: {
+    maxHeight: '80vh', // Limit the height of the route details box
+    overflowY: 'auto', // Make it scrollable
+    padding: '10px',
+    marginBottom: '20px',
+  },
+  moreVertIcon: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    cursor: "pointer",
+    margin: "10px 0", // Margin to create space around the icon
+  },
+  boldLineHover: {
+    "&:hover": {
+      borderBottom: "2px solid #333", // Make the line bold when hovered
+    },
+  },
+  line: {
+    width: "100%",
+    borderBottom: "1px solid #ccc",
+  },
+  icon: {
+    fontSize: "16px", // Decrease the size of the icons
+    marginRight: "10px", // Add some spacing between the icon and the text
+  },
+  moreVertIcon: {
+    fontSize: "16px",
+    color: "#555",
   },
 };
 

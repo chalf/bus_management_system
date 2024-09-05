@@ -8,6 +8,7 @@ export const endpoints = {
     "current-user": "/current-user",
     "update": "/user/current-user",
     "register": "/register",
+    "find":"/route/find",
 }
 
 export const authAPIs = () => {
