@@ -71,7 +71,8 @@ public class WebApplicationContext implements WebMvcConfigurer {
     // Specify Property Files
     public MessageSource messageSource() {
         ResourceBundleMessageSource resource = new ResourceBundleMessageSource();
-        resource.setBasenames("beanValidator", "webapp", "adminPage");
+        resource.setBasenames("beanValidator", "webapp", 
+                "adminPage", "resources");
         return resource;
     }
 

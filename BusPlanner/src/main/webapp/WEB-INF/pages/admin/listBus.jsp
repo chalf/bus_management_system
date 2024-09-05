@@ -45,6 +45,7 @@
                     <div class="mb-3">
                         <label for="busNumber" class="form-label">Số Xe</label>
                         <form:input cssClass="form-control" id="busNumber" path="busNumber"/>
+                        <form:errors path="busNumber" cssClass="alert alert-danger" element="div" />
                     </div>
                     <div class="mb-3">
                         <label for="browser">Tuyến Đường</label>
