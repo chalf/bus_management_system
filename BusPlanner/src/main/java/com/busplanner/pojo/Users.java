@@ -77,7 +77,6 @@ public class Users implements Serializable {
     @Column(name = "avatar_url")
     private String avatarUrl;
     @Basic(optional = false)
-    @NotNull
     @Size(min = 1, max = 12)
     @Column(name = "role")
     private String role;
