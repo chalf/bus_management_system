@@ -6,18 +6,17 @@ import {
   Card,
   Alert,
   Image,
-  Dropdown,
   Button,
   Modal,
   Form,
   Table,
   Spinner,
   Tooltip,
-  OverlayTrigger
+  OverlayTrigger,
 } from "react-bootstrap";
 import { authAPIs, endpoints } from "../../configs/APIs";
 import styles from "../Style"; // Import styles from the style.js
-import { useAuth } from '../AuthContext';
+import { useAuth } from "../AuthContext";
 
 const UserInfo = () => {
   const { userInfo, fetchUserInfo } = useAuth();
@@ -31,17 +30,44 @@ const UserInfo = () => {
   const [editField, setEditField] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
+  const [likedRoutes, setLikedRoutes] = useState([]);
+  const [showLikedRoutes, setShowLikedRoutes] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   useEffect(() => {
     if (userInfo) {
       setNewFullName(userInfo.fullName);
       setNewEmail(userInfo.email);
+      fetchLikedRoutes();
     }
   }, [userInfo]);
+
+  const fetchLikedRoutes = async () => {
+    try {
+      const response = await authAPIs().get(endpoints["liked-routes"]);
+      setLikedRoutes(response.data);
+    } catch (err) {
+      console.error("Error fetching liked routes:", err);
+      setError("Error: Unable to fetch liked routes.");
+    }
+  };
 
   const handleShowModal = (field) => {
     setEditField(field);
     setShowModal(true);
+  };
+
+  const handleDeleteRoute = async (favoriteId) => {
+    if (window.confirm("Bạn chắc chắn muốn xóa?")) {
+      try {
+        await authAPIs().delete(endpoints["unlike-route"](favoriteId));
+        setShowSuccessModal(true); // Show success modal on successful deletion
+        fetchLikedRoutes(); // Refresh the list of liked routes
+      } catch (err) {
+        console.error("Error deleting route:", err);
+        setError("Error: Unable to delete the route.");
+      }
+    }
   };
 
   const handleCloseModal = () => setShowModal(false);
@@ -51,6 +77,8 @@ const UserInfo = () => {
   const handleCloseAvatarModal = () => setShowAvatarModal(false);
 
   const handleAvatarChange = (e) => setNewAvatar(e.target.files[0]);
+
+  const handleCloseSuccessModal = () => setShowSuccessModal(false);
 
   const handleSaveChanges = async () => {
     setIsUpdating(true);
@@ -116,7 +144,9 @@ const UserInfo = () => {
               <Card.Body>
                 <OverlayTrigger
                   placement="top"
-                  overlay={<Tooltip id="avatar-tooltip">Thay đổi Avatar</Tooltip>}
+                  overlay={
+                    <Tooltip id="avatar-tooltip">Thay đổi Avatar</Tooltip>
+                  }
                 >
                   <Image
                     src={userInfo.avatarUrl}
@@ -134,7 +164,9 @@ const UserInfo = () => {
                 <Table style={styles.customTable}>
                   <tbody>
                     <tr style={styles.customTableRow}>
-                      <td><strong>Họ và Tên:</strong></td>
+                      <td>
+                        <strong>Họ và Tên:</strong>
+                      </td>
                       <td>{userInfo.fullName}</td>
                       <td>
                         <Button
@@ -146,7 +178,9 @@ const UserInfo = () => {
                       </td>
                     </tr>
                     <tr>
-                      <td><strong>Email:</strong></td>
+                      <td>
+                        <strong>Email:</strong>
+                      </td>
                       <td>{userInfo.email}</td>
                       <td>
                         <Button
@@ -171,22 +205,45 @@ const UserInfo = () => {
                     </tr>
                   </tbody>
                 </Table>
-                <Dropdown className="mt-3">
-                  <Dropdown.Toggle variant="secondary" id="dropdown-basic">
-                    Các tuyến đường yêu thích
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu>
-                    <Dropdown.Item href="#/route1">
-                      Tuyến 1: A đến B
-                    </Dropdown.Item>
-                    <Dropdown.Item href="#/route2">
-                      Tuyến 2: C đến D
-                    </Dropdown.Item>
-                    <Dropdown.Item href="#/route3">
-                      Tuyến 3: E đến F
-                    </Dropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown>
+                <Button
+                  variant="secondary"
+                  onClick={() => setShowLikedRoutes(!showLikedRoutes)}
+                >
+                  {showLikedRoutes
+                    ? "Ẩn tuyến đường yêu thích"
+                    : "Xem tuyến đường yêu thích"}
+                </Button>
+                {showLikedRoutes && (
+                  <Table className="mt-3" striped bordered hover>
+                    <thead>
+                      <tr>
+                        <th>Tên tuyến đường</th>
+                        <th>Điểm bắt đầu</th>
+                        <th>Điểm kết thúc</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {likedRoutes.map((route) => (
+                        <tr key={route.favoriteId}>
+                          <td>{route.routeId.routeName}</td>
+                          <td>{route.routeId.startPoint}</td>
+                          <td>{route.routeId.endPoint}</td>
+                          <td>
+                            <Button
+                              variant="danger"
+                              onClick={() =>
+                                handleDeleteRoute(route.favoriteId)
+                              }
+                            >
+                              Xóa
+                            </Button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </Table>
+                )}
               </Card.Body>
             </Card>
           ) : (
@@ -294,6 +351,17 @@ const UserInfo = () => {
             ) : (
               "Lưu thay đổi"
             )}
+          </Button>
+        </Modal.Footer>
+      </Modal>
+      <Modal show={showSuccessModal} onHide={handleCloseSuccessModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>Thông báo</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Đã xóa tuyến đường yêu thích thành công</Modal.Body>
+        <Modal.Footer>
+          <Button variant="primary" onClick={handleCloseSuccessModal}>
+            OK
           </Button>
         </Modal.Footer>
       </Modal>

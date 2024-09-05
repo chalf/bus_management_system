@@ -9,6 +9,9 @@ export const endpoints = {
     "update": "/user/current-user",
     "register": "/register",
     "find":"/route/find",
+    "like-route":(routeId) => `/user/current-user/like/${routeId}/`,
+    "liked-routes" : "/user/current-user/liked-routes",
+    "unlike-route":(routeId) => `/user/current-user/unlike/${routeId}/`,
 }
 
 export const authAPIs = () => {

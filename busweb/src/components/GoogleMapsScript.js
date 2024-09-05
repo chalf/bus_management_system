@@ -21,11 +21,25 @@ const GoogleMapsScript = () => {
       }
     };
 
+    script.onerror = (error) => {
+      console.error("Error loading Google Maps API:", error);
+    };
+
+    // Check if the script is already in the document
+    const existingScript = document.querySelector(`script[src^="https://maps.googleapis.com/maps/api/js"]`);
+    if (existingScript) {
+      console.log("Google Maps script already exists. Removing old script.");
+      existingScript.remove();
+    }
+
     document.head.appendChild(script);
 
     return () => {
       // Cleanup script when the component unmounts
-      document.head.removeChild(script);
+      const scriptToRemove = document.querySelector(`script[src^="https://maps.googleapis.com/maps/api/js"]`);
+      if (scriptToRemove) {
+        document.head.removeChild(scriptToRemove);
+      }
     };
   }, []);
 
