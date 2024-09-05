@@ -18,5 +18,5 @@ public interface RouteStopService {
     void deleteRouteStop(int routeStopId);
     List<Routestops> getRouteStopsByRouteId(int routeId);
     List<Routestops> getRouteStopsByStopId(int stopId);
-    void updateRouteStopsOrder(Integer routeId, List<Routestops> routeStops);
+    void updateRouteStopsOrder(List<Routestops> routeStops);
 }

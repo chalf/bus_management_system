@@ -38,34 +38,6 @@ public class ApiRouteController {
 
     @Autowired
     private RouteService routeService;
-
-//    @GetMapping("/find")
-//    public ResponseEntity<?> findRoute(@RequestParam(value = "startLat") String startLat,
-//            @RequestParam(value = "startLon") String startLon,
-//            @RequestParam(value = "endLat") String endLat,
-//            @RequestParam(value = "endLon") String endLon) throws IOException, ParseException {
-//        // Lấy tọa độ của điểm đi và điểm đến mà người dùng nhập
-////        Map<String, String> startCoordinate = geocoding.geocoding(startPoint);
-////        Map<String, String> endCoordinate = geocoding.geocoding(endPoint);
-//        // Tìm điểm dừng gần nhất cho điểm đi và điểm đến
-//        
-//        Stops nearestStartStop = stopService.findNearestStop(Double.parseDouble(startLat), Double.parseDouble(startLon));
-//        
-//        Stops nearestEndStop = stopService.findNearestStop(Double.parseDouble(endLat), Double.parseDouble(endLon));
-//       
-//        // Tìm tuyến đường từ điểm đi tới điểm đến
-//        List<RouteSuggestion> routeSuggestions = routeService.findRoutes(
-//                startLat + ", " + startLon,
-//                endLat + ", " + endLon,
-//                nearestStartStop, nearestEndStop);
-//        
-//        
-//        
-//        // Gọi Google Maps API để tính toán khoảng cách và thời gian
-//        routeSuggestions = routeService.calculateRouteDetails(routeSuggestions);
-//
-//        return ResponseEntity.ok(routeSuggestions);
-//    }
     
     
     @GetMapping("/find")

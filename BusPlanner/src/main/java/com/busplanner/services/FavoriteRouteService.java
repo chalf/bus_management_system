@@ -4,6 +4,7 @@
  */
 package com.busplanner.services;
 
+import com.busplanner.dto.FavoriteRouteDto;
 import com.busplanner.pojo.Favoriteroutes;
 import java.util.List;
 
@@ -12,8 +13,8 @@ import java.util.List;
  * @author ASUS
  */
 public interface FavoriteRouteService {
-    List<Favoriteroutes> getFavoriteRoutesByUserId(int userId);
-    Favoriteroutes addOrUpdateFavoriteRoute(Favoriteroutes favoriteroute);
+    List<FavoriteRouteDto> getFavoriteRoutesByUserId(int userId);
+    FavoriteRouteDto addOrUpdateFavoriteRoute(Favoriteroutes favoriteroute);
     Favoriteroutes getFavoriteRouteById(int favoriteId);
     void deleteFavoriteRoute(int favoriteId);
     List<Favoriteroutes> getAllFavoriteRoutes();

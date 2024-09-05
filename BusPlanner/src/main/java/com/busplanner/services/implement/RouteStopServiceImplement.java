@@ -54,7 +54,7 @@ public class RouteStopServiceImplement implements RouteStopService {
 
     @Override
     @Transactional
-    public void updateRouteStopsOrder(Integer routeId, List<Routestops> routeStops) {
+    public void updateRouteStopsOrder(List<Routestops> routeStops) {
         for (Routestops routeStop : routeStops) {
             routeStopRepository.updateStopOrder(routeStop.getRouteStopId(), routeStop.getStopOrder());
         }

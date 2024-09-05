@@ -119,15 +119,20 @@
                 <form id="reorderForm" action="${pageContext.request.contextPath}/admin/routestop/update" method="post">
                     <ul id="sortableStops" class="list-group">
                         <c:forEach var="stop" items="${routeStops}" varStatus="status">
+                            
                             <li class="list-group-item" data-id="${stop.routeStopId}">
+                                <!--mỗi li gồm value=routeStopId được gán vô name=routeStops[index].routeStopId
+                                và  value=index+1 (tính từ 0) chính là stopOrder gán vô name=routeStops[index].stopOrder -->
                                 <input type="hidden" name="routeStops[${status.index}].routeStopId" value="${stop.routeStopId}" />
                                 <input type="hidden" name="routeStops[${status.index}].stopOrder" value="${status.index + 1}" />
                                 <span class="badge badge-primary mr-2 stop-order">${status.index + 1}</span>
-                                ${stop.stopId.stopName}
+                                ${stop.stopId.address}
                             </li>
                         </c:forEach>
                     </ul>
+                    <!--route này được truyền vô khi xem chi tiết 1 Route ở RouteController phương thức getRouteDetails-->
                     <input type="hidden" name="routeId" value="${route.routeId}" />
+                    <!--Khi bấm submit, controller lấy các thuộc tính name qua RequestParam-->
                     <button type="submit" class="btn btn-success mt-3">Cập nhật</button>
                 </form>
             </div>
@@ -178,8 +183,10 @@
                     // Function to update the displayed stop order
                     function updateStopOrders() {
                         $("#sortableStops li").each(function (index) {
-                            $(this).find('.stop-order').text(index + 1); // Update the order number
-                            $(this).find('input[name$=".stopOrder"]').val(index + 1); // Update the hidden input field
+                            $(this).find('.stop-order').text(index + 1); // Update the order number for UI
+                            $(this).find('input[name$=".stopOrder"]').val(index + 1);
+                            // Cập nhật giá trị trong input ẩn (input[name$=".stopOrder"]) 
+                            // để chuẩn bị gửi lên server khi form được submit.
                         });
                     }
                 });

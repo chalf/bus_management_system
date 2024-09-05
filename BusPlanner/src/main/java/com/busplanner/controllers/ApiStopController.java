@@ -4,6 +4,7 @@
  */
 package com.busplanner.controllers;
 
+import com.busplanner.dto.StopDto;
 import com.busplanner.pojo.Stops;
 import com.busplanner.services.StopService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,9 +28,11 @@ public class ApiStopController {
     
     // truyền vô vĩ độ và kinh độ của điểm đi, trả ra Stops gần nhất
     @GetMapping(path="/nearest-stop", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Stops> getNearestStop(@RequestParam(value = "latitude") double lat, 
+    public ResponseEntity<StopDto> getNearestStop(@RequestParam(value = "latitude") double lat, 
                                 @RequestParam(value = "longitude") double lon) {
         Stops nearestStop = stopService.findNearestStop(lat, lon);
-        return new ResponseEntity<>(nearestStop, HttpStatus.OK);
+        StopDto nearestStopDto = new StopDto(nearestStop.getStopId(), nearestStop.getStopName(),
+                                nearestStop.getLatitude(), nearestStop.getLongitude(), nearestStop.getAddress());
+        return new ResponseEntity<>(nearestStopDto, HttpStatus.OK);
     }
 }
