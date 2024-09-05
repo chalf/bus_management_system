@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Container, Row, Col, Spinner } from "react-bootstrap";
+import { Container, Row, Col, Spinner, Nav, Tab } from "react-bootstrap";
 import styles from "./Style";
 import { authAPIs, endpoints } from "../configs/APIs";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import PinDropIcon from "@mui/icons-material/PinDrop";
 import WhereToVoteIcon from "@mui/icons-material/WhereToVote";
+import { Hail } from "@mui/icons-material";
 import { Tooltip, IconButton } from "@mui/material";
 import MapComponent from "./MapComponent";
 
@@ -15,11 +16,12 @@ const HomePage = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchInput1, setSearchInput1] = useState("");
   const [searchInput2, setSearchInput2] = useState("");
-  const [routeDetails, setRouteDetails] = useState(null); // State to store route details
+  const [routeDetails, setRouteDetails] = useState(null);
   const searchInput1Ref = useRef(null);
   const searchInput2Ref = useRef(null);
   const [mapsLoaded, setMapsLoaded] = useState(false);
-  const [loading, setLoading] = useState(false); // State for loading spinner
+  const [loading, setLoading] = useState(false);
+  const [selectedRoute, setSelectedRoute] = useState(null);
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -104,26 +106,27 @@ const HomePage = () => {
 
       console.log("Search result:", response.data);
 
-      // Format the route details
-      const formattedRouteDetails = {
-        ...response.data[0],
-        startPoint: response.data[0].startPoint,
-        endPoint: response.data[0].endPoint,
+      const formattedRouteDetails = response.data.slice(0, 5).map(route => ({
+        ...route,
+        startPoint: route.startPoint,
+        endPoint: route.endPoint,
         startStop: {
-          ...response.data[0].startStop,
-          address: response.data[0].startStop.address,
+          ...route.startStop,
+          address: route.startStop.address,
         },
         endStop: {
-          ...response.data[0].endStop,
-          address: response.data[0].endStop.address,
+          ...route.endStop,
+          address: route.endStop.address,
         },
-        transferStop: response.data[0].transferStop
+        transferStop: route.transferStop
           ? {
-              ...response.data[0].transferStop,
-              address: response.data[0].transferStop.address,
+              ...route.transferStop,
+              address: route.transferStop.address,
             }
           : null,
-      };
+          startRoute: route.startRoute || {}, // Provide a default empty object
+        transferRoute: route.transferRoute || {} // Provide a default empty object
+      }));
 
       setRouteDetails(formattedRouteDetails);
     } catch (error) {
@@ -154,8 +157,40 @@ const HomePage = () => {
     });
   };
 
-  const handleMoreVertClick = () => {
-    console.log("Xem lộ trình");
+  const handleMoreVertClick = (routeIndex, segmentIndex) => {
+    if (routeDetails && routeDetails[routeIndex]) {
+      const route = routeDetails[routeIndex];
+      let start, end;
+
+      switch (segmentIndex) {
+        case 0:
+          start = route.startPoint;
+          end = route.startStop.address;
+          break;
+        case 1:
+          start = route.startStop.address;
+          end = route.transferStop ? route.transferStop.address : route.endStop.address;
+          break;
+        case 2:
+          if (route.transferStop) {
+            start = route.transferStop.address;
+            end = route.endStop.address;
+          } else {
+            start = route.endStop.address;
+            end = route.endPoint;
+          }
+          break;
+        case 3:
+          start = route.endStop.address;
+          end = route.endPoint;
+          break;
+        default:
+          console.error("Invalid segment index");
+          return;
+      }
+
+      setSelectedRoute({ start, end });
+    }
   };
 
   const apikey = process.env.REACT_APP_GOOGLE_API_KEY;
@@ -204,154 +239,133 @@ const HomePage = () => {
             Tìm kiếm
           </button>
         </div>
-
+        
         {/* Display loading spinner when fetching data */}
-        {loading && (
-          <div className="d-flex justify-content-center my-4">
-            <Spinner animation="border" variant="primary" />
-          </div>
-        )}
+        {!loading && routeDetails && routeDetails.length > 0 && (
+          <Tab.Container defaultActiveKey="0">
+            <Nav variant="tabs">
+              {routeDetails.map((_, index) => (
+                <Nav.Item key={index}>
+                  <Nav.Link eventKey={index.toString()}>{`Tuyến số ${index + 1}`}</Nav.Link>
+                </Nav.Item>
+              ))}
+            </Nav>
+            <Tab.Content>
+              {routeDetails.map((route, index) => (
+                <Tab.Pane eventKey={index.toString()} key={index}>
+                  <Container>
+                    <Row className="my-2">
+                      <Col xs={1} className="d-flex align-items-center justify-content-center">
+                        <LocationOnIcon />
+                      </Col>
+                      <Col xs={10}><strong>Điểm đi:</strong><br />{route.startPoint}</Col>
+                    </Row>
+                    <Row className="my-2">
+                      <Col xs={1} className="d-flex align-items-center justify-content-center">
+                        <Tooltip title="Xem lộ trình">
+                          <IconButton onClick={() => handleMoreVertClick(index, 0)}>
+                            <MoreVertIcon />
+                          </IconButton>
+                        </Tooltip>
+                      </Col>
+                      <Col xs={10}></Col>
+                    </Row>
+                    <Row className="my-2">
+                      <Col xs={1} className="d-flex align-items-center justify-content-center">
+                        <PinDropIcon />
+                      </Col>
+                      <Col xs={10}>
+                        <div>
+                        <strong>Lên tại trạm:</strong><br />
+                          {route.startStop.address}
+                          <br />
+                          <strong>Lên xe Bus số:</strong> {route.busesForStartRoute.map((bus) => bus.busNumber).join(", ")}
+                        </div>
+                        <div className="mt-1"><strong>Tuyến: </strong>{route.startRoute.routeName}</div>
+                      </Col>
+                    </Row>
+                    <Row className="my-2">
+                      <Col xs={1} className="d-flex align-items-center justify-content-center">
+                        <Tooltip title="Xem lộ trình">
+                          <IconButton onClick={() => handleMoreVertClick(index, 1)}>
+                            <MoreVertIcon />
+                          </IconButton>
+                        </Tooltip>
+                      </Col>
+                      <Col xs={10}></Col>
+                    </Row>
 
-        {/* Route Details Box */}
-        {!loading && routeDetails && (
-          <Container>
-            <Row className="my-2">
-              <Col
-                xs={1}
-                className="d-flex align-items-center justify-content-center"
-              >
-                <LocationOnIcon />
-              </Col>
-              <Col xs={10}>{routeDetails.startPoint}</Col>
-            </Row>
-            <Row className="my-2">
-              <Col
-                xs={1}
-                className="d-flex align-items-center justify-content-center"
-              >
-                <Tooltip title="Xem lộ trình">
-                  <IconButton onClick={handleMoreVertClick}>
-                    <MoreVertIcon />
-                  </IconButton>
-                </Tooltip>
-              </Col>
-              <Col xs={10}></Col>
-            </Row>
-            <Row className="my-2">
-              <Col
-                xs={1}
-                className="d-flex align-items-center justify-content-center"
-              >
-                <PinDropIcon />
-              </Col>
-              <Col xs={10}>
-                <div>
-                  {routeDetails.startStop.address}
-                  <br />
-                  Xe Buýt:{" "}
-                  {routeDetails.busesForStartRoute
-                    .map((bus) => bus.busNumber)
-                    .join(", ")}
-                </div>
-              </Col>
-            </Row>
-            <Row className="my-2">
-              <Col
-                xs={1}
-                className="d-flex align-items-center justify-content-center"
-              >
-                <Tooltip title="Xem lộ trình">
-                  <IconButton onClick={handleMoreVertClick}>
-                    <MoreVertIcon />
-                  </IconButton>
-                </Tooltip>
-              </Col>
-              <Col xs={10}></Col>
-            </Row>
+                    {route.transferStop && route.busesForTransferRoute && (
+                      <>
+                        <Row className="my-2">
+                          <Col xs={1} className="d-flex align-items-center justify-content-center">
+                            <Hail />
+                          </Col>
+                          <Col xs={10}>
+                            <div>
+                              <strong>Xuống tại trạm:</strong><br />
+                              {route.transferStop.address}
+                              <br />
+                              <strong>Lên xe Bus số:</strong>  {route.busesForTransferRoute.map((bus) => bus.busNumber).join(", ")}
+                            </div>
+                            <div className="mt-1"><strong>Tuyến: </strong>{route.transferRoute.routeName}</div>
+                          </Col>
+                        </Row>
+                        <Row className="my-2">
+                          <Col xs={1} className="d-flex align-items-center justify-content-center">
+                            <Tooltip title="Xem lộ trình">
+                              <IconButton onClick={() => handleMoreVertClick(index, 2)}>
+                                <MoreVertIcon />
+                              </IconButton>
+                            </Tooltip>
+                          </Col>
+                          <Col xs={10}></Col>
+                        </Row>
+                      </>
+                    )}
 
-            {routeDetails.transferStop &&
-              routeDetails.busesForTransferRoute && (
-                <>
-                  <Row className="my-2">
-                    <Col
-                      xs={1}
-                      className="d-flex align-items-center justify-content-center"
-                    >
-                      <WhereToVoteIcon />
-                    </Col>
-                    <Col xs={10}>
-                      <div>
-                        {routeDetails.transferStop.address}
-                        <br />
-                        Xe Buýt:{" "}
-                        {routeDetails.busesForTransferRoute
-                          .map((bus) => bus.busNumber)
-                          .join(", ")}
-                      </div>
-                    </Col>
-                  </Row>
-                  <Row className="my-2">
-                    <Col
-                      xs={1}
-                      className="d-flex align-items-center justify-content-center"
-                    >
-                      <Tooltip title="Xem lộ trình">
-                        <IconButton onClick={handleMoreVertClick}>
-                          <MoreVertIcon />
-                        </IconButton>
-                      </Tooltip>
-                    </Col>
-                    <Col xs={10}></Col>
-                  </Row>
-                </>
-              )}
-
-            <Row className="my-2">
-              <Col
-                xs={1}
-                className="d-flex align-items-center justify-content-center"
-              >
-                <PinDropIcon />
-              </Col>
-              <Col xs={10}>{routeDetails.endStop.address}</Col>
-            </Row>
-            <Row className="my-2">
-              <Col
-                xs={1}
-                className="d-flex align-items-center justify-content-center"
-              >
-                <Tooltip title="Xem lộ trình">
-                  <IconButton onClick={handleMoreVertClick}>
-                    <MoreVertIcon />
-                  </IconButton>
-                </Tooltip>
-              </Col>
-              <Col xs={10}></Col>
-            </Row>
-            <Row className="my-2">
-              <Col
-                xs={1}
-                className="d-flex align-items-center justify-content-center"
-              >
-                <LocationOnIcon />
-              </Col>
-              <Col xs={10}>{routeDetails.endPoint}</Col>
-            </Row>
-            <Row className="my-2">
-              <Col
-                xs={1}
-                className="d-flex align-items-center justify-content-center"
-              ></Col>
-              <Col xs={10}>Khoảng cách: {routeDetails.distanceTotal} km</Col>
-            </Row>
-          </Container>
+                    <Row className="my-2">
+                      <Col xs={1} className="d-flex align-items-center justify-content-center">
+                        <PinDropIcon />
+                      </Col>
+                      <Col xs={10}><strong>Xuống tại trạm:</strong><br />{route.endStop.address}</Col>
+                    </Row>
+                    <Row className="my-2">
+                      <Col xs={1} className="d-flex align-items-center justify-content-center">
+                        <Tooltip title="Xem lộ trình">
+                          <IconButton onClick={() => handleMoreVertClick(index, 3)}>
+                            <MoreVertIcon />
+                          </IconButton>
+                        </Tooltip>
+                      </Col>
+                      <Col xs={10}></Col>
+                    </Row>
+                    <Row className="my-2">
+                      <Col xs={1} className="d-flex align-items-center justify-content-center">
+                        <LocationOnIcon />
+                      </Col>
+                      <Col xs={10}><strong>Điểm đến:</strong><br />{route.endPoint}</Col>
+                    </Row>
+                    <Row className="my-2">
+                      <Col xs={1} className="d-flex align-items-center justify-content-center"></Col>
+                      <Col xs={10}><strong>Khoảng cách: </strong> {parseFloat(route.distanceTotal).toFixed(2)} km</Col>
+                    </Row>
+                    <Row className="my-2">
+                      <Col xs={1} className="d-flex align-items-center justify-content-center"></Col>
+                      <Col xs={10}><strong>Ước tính: </strong>{parseFloat(route.durationTotal).toFixed(2)} phút</Col>
+                    </Row>
+                  </Container>
+                </Tab.Pane>
+              ))}
+            </Tab.Content>
+          </Tab.Container>
         )}
       </div>
 
       {error ? (
         <p>{error}</p>
       ) : location.lat && location.lng ? (
-        <MapComponent location={location} routeDetails={routeDetails} />
+        <MapComponent location={location} routeDetails={routeDetails}  selectedRoute={selectedRoute}/>
       ) : (
         <p>Đang lấy vị trí của bạn...</p>
       )}
