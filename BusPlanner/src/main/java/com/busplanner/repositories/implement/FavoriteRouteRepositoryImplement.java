@@ -35,7 +35,7 @@ public class FavoriteRouteRepositoryImplement implements FavoriteRouteRepository
         CriteriaBuilder criteria = s.getCriteriaBuilder();
         CriteriaQuery<Favoriteroutes> query = criteria.createQuery(Favoriteroutes.class);
         Root<Favoriteroutes> root = query.from(Favoriteroutes.class);
-        
+
         Predicate predicate = criteria.equal(root.get("userId").get("userId"), userId);
         query.where(predicate);
         return s.createQuery(query).getResultList();
@@ -46,11 +46,11 @@ public class FavoriteRouteRepositoryImplement implements FavoriteRouteRepository
     public Favoriteroutes addOrUpdateFavoriteRoute(Favoriteroutes favoriteroute) {
         Session s = this.sessionFactory.getObject().getCurrentSession();
         if (favoriteroute.getFavoriteId() != null) {
-        s.update(favoriteroute);
-    } else {
-        s.save(favoriteroute);
-    }
-    return favoriteroute;
+            s.update(favoriteroute);
+        } else {
+            s.save(favoriteroute);
+        }
+        return favoriteroute;
     }
 
     @Override

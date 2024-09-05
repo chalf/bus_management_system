@@ -4,9 +4,12 @@
  */
 package com.busplanner.services.implement;
 
+import com.busplanner.dto.FavoriteRouteDto;
+import com.busplanner.dto.RouteDto;
 import com.busplanner.pojo.Favoriteroutes;
 import com.busplanner.repositories.FavoriteRouteRepository;
 import com.busplanner.services.FavoriteRouteService;
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,14 +26,30 @@ public class FavoriteRouteServiceImplement implements FavoriteRouteService{
 
     @Override
     @Transactional
-    public List<Favoriteroutes> getFavoriteRoutesByUserId(int userId) {
-        return favoriteRouteRepository.getFavoriteRoutesByUserId(userId);
+    public List<FavoriteRouteDto> getFavoriteRoutesByUserId(int userId) {
+        List<Favoriteroutes> favRouteList = favoriteRouteRepository.getFavoriteRoutesByUserId(userId);
+        List<FavoriteRouteDto> favRouteListDto = new ArrayList<>();
+        for(Favoriteroutes favRoute : favRouteList){
+            RouteDto routeDto = new RouteDto(favRoute.getRouteId().getRouteId(),
+                    favRoute.getRouteId().getRouteName(), 
+                    favRoute.getRouteId().getStartPoint(),
+                    favRoute.getRouteId().getEndPoint());
+            FavoriteRouteDto favRouteDto = new FavoriteRouteDto(favRoute.getFavoriteId(), routeDto, favRoute.getUserId().getUsername());
+            favRouteListDto.add(favRouteDto);
+        }
+        return favRouteListDto;
     }
 
     @Override
     @Transactional
-    public Favoriteroutes addOrUpdateFavoriteRoute(Favoriteroutes favoriteroute) {
-        return favoriteRouteRepository.addOrUpdateFavoriteRoute(favoriteroute);
+    public FavoriteRouteDto addOrUpdateFavoriteRoute(Favoriteroutes favoriteroute) {
+        Favoriteroutes fav = favoriteRouteRepository.addOrUpdateFavoriteRoute(favoriteroute);
+        RouteDto routeDto = new RouteDto(fav.getRouteId().getRouteId(),
+                    fav.getRouteId().getRouteName(), 
+                    fav.getRouteId().getStartPoint(),
+                    fav.getRouteId().getEndPoint());
+        
+        return new FavoriteRouteDto(fav.getFavoriteId(), routeDto, fav.getUserId().getUsername());
     }
 
     @Override

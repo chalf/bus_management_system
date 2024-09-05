@@ -5,6 +5,7 @@
 package com.busplanner.services.implement;
 
 import com.busplanner.component.DistanceMatrixService;
+import com.busplanner.component.GeocodingService;
 import com.busplanner.dto.RouteDto;
 import com.busplanner.dto.RouteSuggestion;
 import com.busplanner.dto.StopDto;
@@ -15,13 +16,13 @@ import com.busplanner.pojo.Stops;
 import com.busplanner.repositories.BusRepository;
 import com.busplanner.repositories.RouteRepository;
 import com.busplanner.repositories.RouteStopRepository;
-import com.busplanner.repositories.StopRepository;
 import com.busplanner.services.RouteService;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,8 +33,6 @@ public class RouteServiceImplement implements RouteService {
 
     @Autowired
     private RouteRepository routeRepository;
-    @Autowired
-    private StopRepository stopRepository;
     @Autowired
     private RouteStopRepository routeStopRepository;
     @Autowired
@@ -66,6 +65,7 @@ public class RouteServiceImplement implements RouteService {
     // Tìm tối đa 2 Route (tức là chuyển tiếp chỉ 1 lần)
     public List<RouteSuggestion> findRoutes(String startPoint, String endPoint,
             Stops nearestStartStop, Stops nearestEndStop) {
+        
         List<RouteSuggestion> routeSuggestions = new ArrayList<>();
         // Kiểm tra nếu điểm dừng tồn tại
         if (nearestStartStop == null || nearestEndStop == null) {
@@ -83,7 +83,7 @@ public class RouteServiceImplement implements RouteService {
                 StopDto nearestStartStopDto = new StopDto(nearestStartStop.getStopId(), nearestStartStop.getStopName(), nearestStartStop.getLatitude(), nearestStartStop.getLongitude(), nearestStartStop.getAddress());
                 StopDto nearestEndStopDto = new StopDto(nearestEndStop.getStopId(), nearestEndStop.getStopName(), nearestEndStop.getLatitude(), nearestEndStop.getLongitude(), nearestEndStop.getAddress());
                 RouteDto startRouteDto = new RouteDto(startRoute.getRouteId(), startRoute.getRouteName(), startRoute.getStartPoint(), startRoute.getEndPoint());
-
+                
                 routeSuggestions.add(new RouteSuggestion(startPoint, endPoint, startRouteDto,
                         nearestStartStopDto, null, nearestEndStopDto, null));
             }
