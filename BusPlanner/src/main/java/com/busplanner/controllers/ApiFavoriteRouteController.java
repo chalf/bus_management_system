@@ -57,6 +57,9 @@ public class ApiFavoriteRouteController {
     public void unlike(Principal user, @PathVariable(value = "favoriteRouteId") int favoriteRouteId){
         Users currentUser = userService.getUserByUsername(user.getName());
         Favoriteroutes favRoute = favoriteRouteService.getFavoriteRouteById(favoriteRouteId);
+        if(favRoute == null){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST   , "Không tồn tại id của FavoriteRoute");
+        }
         if(currentUser.equals(favRoute.getUserId()) == false){
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You are not " + favRoute.getUserId().getUsername());
         }

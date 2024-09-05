@@ -139,5 +139,13 @@ public class WebApplicationContext implements WebMvcConfigurer {
         return new RestTemplate();
     }
     
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**") // Cho phép tất cả các endpoint
+                .allowedOrigins("http://localhost:3000") // Chỉ định origin cho phép
+                .allowedMethods("GET", "POST", "PUT", "DELETE") // Chỉ định các phương thức HTTP cho phép
+                .allowedHeaders("*") // Cho phép tất cả các header
+                .allowCredentials(true); // Cho phép gửi thông tin xác thực
+    }
 
 }
