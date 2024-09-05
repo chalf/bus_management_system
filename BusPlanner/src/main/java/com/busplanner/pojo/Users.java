@@ -4,6 +4,8 @@
  */
 package com.busplanner.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
@@ -43,6 +45,7 @@ import org.springframework.web.multipart.MultipartFile;
     @NamedQuery(name = "Users.findByRole", query = "SELECT u FROM Users u WHERE u.role = :role"),
     @NamedQuery(name = "Users.findByCreatedAt", query = "SELECT u FROM Users u WHERE u.createdAt = :createdAt"),
     @NamedQuery(name = "Users.findByUpdatedAt", query = "SELECT u FROM Users u WHERE u.updatedAt = :updatedAt")})
+@JsonIgnoreProperties({"password", "favoriteroutesSet", "trafficreportsSet", "file"})
 public class Users implements Serializable {
 
     private static final long serialVersionUID = 1L;
