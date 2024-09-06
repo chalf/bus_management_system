@@ -40,8 +40,14 @@ public class RouteServiceImplement implements RouteService {
 
     @Override
     @Transactional
-    public List<Routes> getListRoutes(Map<String, String> params) {
-        return routeRepository.getListRoutes(params);
+    public List<RouteDto> getListRoutes(Map<String, String> params) {
+        List<Routes> routeList = routeRepository.getListRoutes(params);
+        List<RouteDto> routeListDto = new ArrayList<>();
+        for(Routes route : routeList){
+            RouteDto routeDto = new RouteDto(route.getRouteId(), route.getRouteName(), route.getStartPoint(), route.getEndPoint());
+            routeListDto.add(routeDto);
+        }
+        return routeListDto;
     }
 
     @Override

@@ -5,6 +5,7 @@
 package com.busplanner.controllers;
 
 import com.busplanner.component.GeocodingService;
+import com.busplanner.dto.RouteDto;
 import com.busplanner.dto.RouteSuggestion;
 import com.busplanner.pojo.Routes;
 import com.busplanner.pojo.Stops;
@@ -71,6 +72,11 @@ public class ApiRouteController {
         routeSuggestions = routeService.calculateRouteDetails(routeSuggestions);
 
         return ResponseEntity.ok(routeSuggestions);
+    }
+    
+    @GetMapping("/routelist")
+    public ResponseEntity<List<RouteDto>> getRouteList(){
+        return new ResponseEntity<>(routeService.getListRoutes(null), HttpStatus.OK);
     }
 
 }
