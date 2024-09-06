@@ -4,8 +4,8 @@
  */
 package com.busplanner.services;
 
+import com.busplanner.dto.RouteDto;
 import com.busplanner.dto.RouteSuggestion;
-import com.busplanner.dto.StopDto;
 import com.busplanner.pojo.Routes;
 import com.busplanner.pojo.Stops;
 import java.io.IOException;
@@ -16,7 +16,7 @@ import org.json.simple.parser.ParseException;
 
 
 public interface RouteService {
-    List<Routes> getListRoutes(Map<String, String> params);
+    List<RouteDto> getListRoutes(Map<String, String> params);
     void addOrUpdateRoute(Routes route);
     Routes getRouteById(int id);
     void deleteRouteById(int id);

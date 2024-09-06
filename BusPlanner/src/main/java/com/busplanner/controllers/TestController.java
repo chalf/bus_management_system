@@ -7,6 +7,7 @@ package com.busplanner.controllers;
 import com.busplanner.component.DistanceMatrixService;
 import com.busplanner.component.GeocodingService;
 import java.io.IOException;
+import java.security.Principal;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -54,4 +55,9 @@ public class TestController {
         return new ResponseEntity<>(response, HttpStatus.OK);
 
     }
+    
+//    @RequestMapping("/login/google")
+//    public Map<String, Object> loginGoogle(OAuth2 googleUSer){
+//        
+//    }
 }
