@@ -22,7 +22,7 @@ const NavBar = () => {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
             <Nav.Link as={Link} to="/">Trang chủ</Nav.Link>
-            <Nav.Link as={Link} to="/docs">Tài liệu</Nav.Link>
+            <Nav.Link as={Link} to="/routes">Danh sách các tuyến đường</Nav.Link>
           </Nav>
           <Nav>
             <NavDropdown

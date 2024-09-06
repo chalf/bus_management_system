@@ -46,5 +46,9 @@
         <put-attribute name="title" value="Quản lý nguời dùng" />
         <put-attribute name="content" value="/WEB-INF/pages/admin/listUser.jsp" />
     </definition>
+    <definition name="FaRoutes" extends="baseLayout">
+        <put-attribute name="title" value="Quản lý tuyến đường yêu thích" />
+        <put-attribute name="content" value="/WEB-INF/pages/admin/listFaRoutes.jsp" />
+    </definition>
     
 </tiles-definitions>

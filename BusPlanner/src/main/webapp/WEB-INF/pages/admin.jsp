@@ -37,6 +37,9 @@
             <a href="<c:url value="/admin/users" />" class="list-group-item list-group-item-action d-flex align-items-center">
                 <i class="bi bi-people me-3"></i> <spring:message code="admin.user.heading" />
             </a>
+            <a href="<c:url value="/admin/faroutes" />" class="list-group-item list-group-item-action d-flex align-items-center">
+                <i class="bi bi-heart-fill me-3"></i></i> <spring:message code="admin.faroute.heading" />
+            </a>
         </div>
     </div>
 

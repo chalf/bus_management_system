@@ -232,7 +232,7 @@ const HomePage = () => {
     } catch (error) {
       console.error("Error liking route:", error);
       setModalTitle("Lỗi");
-      setModalMessage("Có lỗi xảy ra!");
+      setModalMessage("Bạn phải đăng nhập mới lưu tuyến được!");
       setModalOpen(true);
     }
   };

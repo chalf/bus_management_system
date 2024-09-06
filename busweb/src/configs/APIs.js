@@ -12,6 +12,7 @@ export const endpoints = {
     "like-route":(routeId) => `/user/current-user/like/${routeId}/`,
     "liked-routes" : "/user/current-user/liked-routes",
     "unlike-route":(routeId) => `/user/current-user/unlike/${routeId}/`,
+    "list-route": "/route/routelist",
 }
 
 export const authAPIs = () => {
