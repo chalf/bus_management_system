@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -40,7 +41,7 @@ public class ApiRouteController {
     @Autowired
     private RouteService routeService;
     
-    
+    @CrossOrigin
     @GetMapping("/find")
     public ResponseEntity<?> findRoute(@RequestParam(value = "origin") String origin,
             @RequestParam(value = "destination") String dest) throws IOException, ParseException {
@@ -74,6 +75,7 @@ public class ApiRouteController {
         return ResponseEntity.ok(routeSuggestions);
     }
     
+    @CrossOrigin
     @GetMapping("/routelist")
     public ResponseEntity<List<RouteDto>> getRouteList(){
         return new ResponseEntity<>(routeService.getListRoutes(null), HttpStatus.OK);

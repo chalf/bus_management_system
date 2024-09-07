@@ -27,6 +27,7 @@ yarn install
 ```
 - At `\bus_management_system\busweb` run this command to run *busweb* Project
 ```commandline
+yarn add @mui/icons-material
 yarn start
 ```
 

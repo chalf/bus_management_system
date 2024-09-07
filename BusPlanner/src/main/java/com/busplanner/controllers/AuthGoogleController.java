@@ -6,7 +6,9 @@ package com.busplanner.controllers;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.busplanner.component.GoogleAuth;
 import com.busplanner.dto.AuthResponse;
+import com.busplanner.dto.GoogleResponseDto;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
@@ -15,12 +17,23 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import org.apache.http.client.ClientProtocolException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 /**
  *
@@ -29,43 +42,24 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/auth")
 public class AuthGoogleController {
-    @PostMapping("/google")
-    public ResponseEntity<?> authenticateWithGoogle(@RequestBody Map<String, String> request) {
-        String token = request.get("token");
+    @Autowired
+    private GoogleAuth googleUtils;
+    @CrossOrigin
+    @GetMapping("/google")
+    public String authenticateWithGoogle(HttpServletRequest request, Model model) throws ClientProtocolException, IOException  {
+        String code = request.getParameter("code");
 
-        // Xác thực mã token từ Google bằng thư viện GoogleIdTokenVerifier
-        GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), new JacksonFactory())
-                .setAudience(Collections.singletonList("1040741028275-nr3qljgsdvcitatesfmlf0snomtf0vim.apps.googleusercontent.com"))
-                .build();
-
-        GoogleIdToken idToken;
-        try {
-            idToken = verifier.verify(token);
-            if (idToken != null) {
-                GoogleIdToken.Payload payload = idToken.getPayload();
-
-                // Xử lý payload để lấy thông tin người dùng
-                String userId = payload.getSubject();
-                String email = payload.getEmail();
-                // Tạo JWT token cho ứng dụng
-                String jwtToken = createJwtToken(userId, email);
-
-                return ResponseEntity.ok(new AuthResponse(jwtToken));
-            } else {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid ID token.");
-            }
-        } catch (GeneralSecurityException | IOException e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Token verification failed.");
+        if (code == null || code.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST   , "Request không có key là code");
         }
-    }
+        String accessToken = googleUtils.getToken(code);
 
-    private String createJwtToken(String userId, String email) {
-        // Tạo JWT token
-        Algorithm algorithm = Algorithm.HMAC256("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");
-        return JWT.create()
-                .withSubject(userId)
-                .withClaim("email", email)
-                .sign(algorithm);
+        GoogleResponseDto googlePojo = googleUtils.getUserInfo(accessToken);
+        UserDetails userDetail = googleUtils.buildUser(googlePojo);
+        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetail, null,
+                userDetail.getAuthorities());
+        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        return "forward:/api/current-user";
     }
 }
